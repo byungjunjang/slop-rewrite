@@ -417,10 +417,10 @@ def layers(bg: dict, taste_md: Path | None = None) -> str:
     return "레이어 · " + " · ".join(parts)
 
 
-# 가이드 고르기 — 힌트(장르)·용도·등록부로 정한다. 본 컨텍스트는 「가이드:」 줄만 읽는다
+# 가이드 고르기 — 힌트(장르)·등록부로 정한다. 본 컨텍스트는 「가이드:」 줄만 읽는다
 ASK = "묻는다"
 ASK_AMBIGUOUS = "힌트 애매"
-ASK_MANY = "등록 가이드 둘 이상"
+ASK_MANY = "가이드 둘 이상"
 
 
 def _genre_of_hint(line: str) -> str:
@@ -428,26 +428,17 @@ def _genre_of_hint(line: str) -> str:
     return line.split(" · ", 1)[0].split(": ", 1)[1]
 
 
-def _use_of_purpose(line: str) -> str:
-    """purpose() 한 줄에서 판정(업무·블로그·애매)."""
-    return line.rsplit("→ ", 1)[1]
-
-
-def select_guide(bg: dict, genre: str, use: str) -> tuple[str | None, str]:
-    """(가이드, "") 또는 (None, 묻는 이유). genre 는 힌트 줄의 장르, use 는 용도 줄의 판정이다.
-    그 장르에 기본(_builtin)이 아닌 등록 가이드가 하나면 그것, 둘 이상이면 묻고, 없으면 기본을 쓴다.
-    기본이 여럿인 장르(줄글)는 용도 판정과 이름이 같은 기본 가이드(업무)를, 그런 것이 없으면 그 장르의 첫 기본 가이드(장피엠)를 쓴다.
-    힌트가 애매이면(그 장르에 가이드가 없으면) 묻는다."""
-    genre_of, builtin = bg.get("_genre_of", {}), bg.get("_builtin", [])
-    defaults = [g for g in builtin if genre_of.get(g) == genre]
-    if not defaults:
+def select_guide(bg: dict, genre: str) -> tuple[str | None, str]:
+    """(가이드, "") 또는 (None, 묻는 이유). genre 는 힌트 줄의 장르다.
+    그 장르의 가이드(기본이든 등록한 것이든)가 하나면 그것을 쓰고, 둘 이상이면 기본 선택 없이 묻는다(2026-10-13).
+    힌트가 애매이면(그 장르에 가이드가 없으면) 묻는다. 용도 줄은 사용자가 고를 때 보는 참고다."""
+    genre_of = bg.get("_genre_of", {})
+    mine = [g for g in guide_names(bg) if genre_of.get(g) == genre]
+    if not mine:
         return None, ASK_AMBIGUOUS
-    mine = [g for g in guide_names(bg) if genre_of.get(g) == genre and g not in builtin]
     if len(mine) >= 2:
         return None, ASK_MANY
-    if mine:
-        return mine[0], ""
-    return (use if use in defaults else defaults[0]), ""
+    return mine[0], ""
 
 
 # ---------------------------------------------------------------------------
@@ -501,7 +492,7 @@ def main(argv: list[str] | None = None) -> int:
         print(h)
         print(u)
         print(layers(bg))
-        guide, why = (a.guide, "") if a.guide != "없음" else select_guide(bg, _genre_of_hint(h), _use_of_purpose(u))
+        guide, why = (a.guide, "") if a.guide != "없음" else select_guide(bg, _genre_of_hint(h))
         if guide is None:
             print(f"가이드: {ASK} · {why}")
             return 0

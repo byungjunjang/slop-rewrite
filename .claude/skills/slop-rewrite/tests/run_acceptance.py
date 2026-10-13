@@ -777,13 +777,14 @@ def test_check_all_hint_guide():
     def diagnose_last(guide, name):
         return run(ALL, "--guide", guide, f"{FIX}/{name}").stdout.rstrip("\n").splitlines()[-1]
 
-    # 줄글 · 용도가 업무면 업무, 그 밖(블로그·애매)은 장피엠. 개조식은 개조식.
-    for name, guide in (("purpose/mail.md", "업무"), ("ai-draft-prose.md", "장피엠"),
-                        ("abstain/already-clean.md", "장피엠"), ("ai-draft-report.md", "개조식")):
+    # 줄글은 가이드가 여럿(장피엠·업무·토스)이라 기본 선택 없이 묻는다(2026-10-13). 개조식은 하나라 그것으로 간다.
+    for name in ("purpose/mail.md", "ai-draft-prose.md", "abstain/already-clean.md"):
         out = lines("없음", name)
-        assert len(out) == 5 and out[3] == f"가이드: {guide}", (name, out[3:])
-        assert out[4].startswith("사전 검사: ") and out[4] == diagnose_last(guide, name), (name, out[4])
-    assert lines("없음", "abstain/already-clean.md")[4].startswith("사전 검사: 깨끗 · ")
+        assert out[0].startswith("힌트: 줄글 ·") and out[3:] == ["가이드: 묻는다 · 가이드 둘 이상"], (name, out)
+    out = lines("없음", "ai-draft-report.md")
+    assert len(out) == 5 and out[3] == "가이드: 개조식", out[3:]
+    assert out[4].startswith("사전 검사: ") and out[4] == diagnose_last("개조식", "ai-draft-report.md"), out[4]
+    assert lines("장피엠", "abstain/already-clean.md")[4].startswith("사전 검사: 깨끗 · ")
     # 짧은 줄글(752자)의 사전 검사는 진단과 같은 짧은 글 명령으로 센다
     assert "짧은 글 예" in run(ALL, "--guide", "장피엠", f"{FIX}/ai-draft-prose.md").stdout
     # 애매 · 묻는다. 사전 검사 줄이 없다
@@ -800,15 +801,14 @@ def test_check_all_hint_guide():
         sys.path.insert(0, str(SKILL / "scripts"))
         import check_all as C
         t = _tmp_md(d, "t.md", body.rstrip("\n") + "\n\n" + C.TRAILER_MARK + "\n\n- 일정 확인 필요\n- 금액 확인 필요\n- 담당 확인 필요\n")
-        got = run(ALL, "--guide", "없음", "--hint", t).stdout.rstrip("\n").splitlines()
+        got = run(ALL, "--guide", "업무", "--hint", t).stdout.rstrip("\n").splitlines()
         assert got[0] == lines("없음", "purpose/mail.md")[0] and got[3] == "가이드: 업무", got
         assert got[4] == run(ALL, "--guide", "업무", t).stdout.rstrip("\n").splitlines()[-1], got
-    # 고르는 규칙 · 등록부만 보고 정한다. 그 장르에 기본이 아닌 가이드가 하나면 그것, 둘 이상이면 묻는다
+    # 고르는 규칙 · 등록부만 보고 정한다. 그 장르에 가이드가 하나면 그것, 둘 이상이면 묻는다
     bg = json.loads((SKILL / "references" / "base-guidelines.json").read_text(encoding="utf-8"))
     sel = C.select_guide
-    assert sel(bg, "줄글", "업무") == ("업무", "") and sel(bg, "줄글", "블로그") == ("장피엠", "")
-    assert sel(bg, "줄글", "애매") == ("장피엠", "") and sel(bg, "개조식", "업무") == ("개조식", "")
-    assert sel(bg, "애매", "업무") == (None, "힌트 애매")
+    assert sel(bg, "줄글") == (None, "가이드 둘 이상") and sel(bg, "개조식") == ("개조식", "")
+    assert sel(bg, "애매") == (None, "힌트 애매")
 
     def with_guides(**genre_of):
         new = json.loads(json.dumps(bg))
@@ -817,11 +817,10 @@ def test_check_all_hint_guide():
             new["_genre_of"][g] = genre
         return new
     one = with_guides(홍길동="줄글")
-    assert sel(one, "줄글", "업무") == ("홍길동", "") and sel(one, "줄글", "블로그") == ("홍길동", "")
-    assert sel(one, "개조식", "애매") == ("개조식", "")                   # 다른 장르의 등록 가이드는 상관없다
-    two = with_guides(홍길동="줄글", 김철수="줄글", 보고="개조식")
-    assert sel(two, "줄글", "업무") == (None, "등록 가이드 둘 이상") and sel(two, "개조식", "애매") == ("보고", "")
-    assert sel(two, "애매", "애매") == (None, "힌트 애매")
+    assert sel(one, "줄글") == (None, "가이드 둘 이상")
+    assert sel(one, "개조식") == ("개조식", "")                            # 다른 장르의 등록 가이드는 상관없다
+    two = with_guides(보고="개조식")
+    assert sel(two, "개조식") == (None, "가이드 둘 이상") and sel(two, "애매") == (None, "힌트 애매")
     print("PASS test_check_all_hint_guide")
 
 
@@ -1264,9 +1263,10 @@ def test_registered_guide():
                 "check_all.BASE = Path(%r); sys.exit(check_all.main(sys.argv[1:]))" % (scripts, str(tmp)))
         h = run("-c", code, "--guide", "없음", "--hint", prose)
         assert "줄글: 장피엠(기본), 업무(기본), 토스(기본), 테스트가이드" in h.stdout.splitlines()[2], h.stdout + h.stderr
-        # 그 장르에 등록한 가이드가 하나면 기본 가이드보다 그것을 고르고, 사전 검사도 그 가이드로 돈다
-        assert h.returncode == 0 and h.stdout.splitlines()[3] == "가이드: 테스트가이드", h.stdout + h.stderr
-        assert h.stdout.splitlines()[4].startswith("사전 검사: "), h.stdout
+        # 줄글 가이드가 여럿이라 묻고, 이름을 주면 사전 검사가 그 가이드로 돈다
+        assert h.returncode == 0 and h.stdout.splitlines()[3] == "가이드: 묻는다 · 가이드 둘 이상", h.stdout + h.stderr
+        h = run("-c", code, "--guide", "테스트가이드", "--hint", prose)
+        assert h.stdout.splitlines()[3] == "가이드: 테스트가이드" and h.stdout.splitlines()[4].startswith("사전 검사: "), h.stdout
         p = run("-c", code, "--guide", "테스트가이드", "--pack", prose)
         assert p.returncode == 0 and "# 읽기 묶음 · 테스트가이드 (줄글)" in p.stdout and "## 가이드 §11-2" in p.stdout, p.stderr
         g = run("-c", code, "--guide", "테스트가이드", prose)
