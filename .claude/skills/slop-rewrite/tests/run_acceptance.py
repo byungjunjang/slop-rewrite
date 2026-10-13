@@ -73,12 +73,13 @@ def test_base_guidelines_common():
     # 2026-10-06 · 코드가 읽지 않던 _pass·_loop·_check_all·_check_order 를 지웠다. 검수 순서와 통과 기준은 check_all.check 와 SKILL.md 표에 있다
     for gone in ("_pass", "_loop", "_check_all", "_check_order"):
         assert gone not in bg, gone
-    # 가이드는 기본 셋 + 사용자가 register_guide.py 로 등록한 것. 표마다 등록된 이름이 빠짐없이 있어야 한다.
+    # 가이드는 기본 넷 + 사용자가 register_guide.py 로 등록한 것. 표마다 등록된 이름이 빠짐없이 있어야 한다.
     # 업무(2026-09-23)는 장르 검사기가 없는 기본 가이드다(_checker_kind none, _checks 는 빈 표).
+    # 토스(2026-10-13)는 이름을 불러야 쓰는 기본 가이드다. 줄글의 첫 기본 가이드가 아니라서 저절로 골라지지 않는다.
     names = [k for k in bg if not k.startswith("_")]
-    assert bg["_builtin"] == ["장피엠", "개조식", "업무"] and set(bg["_builtin"]) <= set(names), bg.get("_builtin")
-    assert {k: bg["_genre_of"][k] for k in bg["_builtin"]} == {"장피엠": "줄글", "개조식": "개조식", "업무": "줄글"}
-    assert {k: bg["_checker_kind"][k] for k in bg["_builtin"]} == {"장피엠": "style", "개조식": "report", "업무": "none"}
+    assert bg["_builtin"] == ["장피엠", "개조식", "업무", "토스"] and set(bg["_builtin"]) <= set(names), bg.get("_builtin")
+    assert {k: bg["_genre_of"][k] for k in bg["_builtin"]} == {"장피엠": "줄글", "개조식": "개조식", "업무": "줄글", "토스": "줄글"}
+    assert {k: bg["_checker_kind"][k] for k in bg["_builtin"]} == {"장피엠": "style", "개조식": "report", "업무": "none", "토스": "style"}
     for table in ("_genre_of", "_checker_kind", "_checks", "_checks_short", "_pack_sections", "_s14_blocks"):
         assert set(bg[table]) == set(names), (table, set(bg[table]) ^ set(names))
     assert set(bg["_checker_kind"].values()) <= {"style", "report", "none"}, bg["_checker_kind"]
@@ -1258,11 +1259,11 @@ def test_registered_guide():
         assert r.returncode == 0 and "[done]" in r.stdout, r.stdout + r.stderr
         assert "[skip]" in run(reg, "--kit", "styleguides/jangpm", "--name", "테스트가이드", "--base", str(tmp)).stdout
         new = json.loads(tmp.read_text(encoding="utf-8"))
-        assert list(new)[:4] == ["장피엠", "개조식", "업무", "테스트가이드"] and new["_checker_kind"]["테스트가이드"] == "style"
+        assert list(new)[:5] == ["장피엠", "개조식", "업무", "토스", "테스트가이드"] and new["_checker_kind"]["테스트가이드"] == "style"
         code = ("import sys; from pathlib import Path; sys.path.insert(0, %r); import check_all; "
                 "check_all.BASE = Path(%r); sys.exit(check_all.main(sys.argv[1:]))" % (scripts, str(tmp)))
         h = run("-c", code, "--guide", "없음", "--hint", prose)
-        assert "줄글: 장피엠(기본), 업무(기본), 테스트가이드" in h.stdout.splitlines()[2], h.stdout + h.stderr
+        assert "줄글: 장피엠(기본), 업무(기본), 토스(기본), 테스트가이드" in h.stdout.splitlines()[2], h.stdout + h.stderr
         # 그 장르에 등록한 가이드가 하나면 기본 가이드보다 그것을 고르고, 사전 검사도 그 가이드로 돈다
         assert h.returncode == 0 and h.stdout.splitlines()[3] == "가이드: 테스트가이드", h.stdout + h.stderr
         assert h.stdout.splitlines()[4].startswith("사전 검사: "), h.stdout

@@ -10,7 +10,7 @@
   python -X utf8 check_all.py --guide <가이드> --hint FILE                 # 고르지 않고 그 가이드로. 사용자가 가이드를 지정했거나 질문에 답한 뒤
   python -X utf8 check_all.py --guide … --prompt --record REC FILE   # 윤문 담당의 한 장 프롬프트(P5). 원문 사전 검사에서 걸린 곳을, 없으면 「걸리는 문장만 고친다」를 싣는다
 
-가이드 이름은 base-guidelines.json 의 밑줄 없는 최상위 키다(기본 셋 + register_guide.py 로 등록한 것).
+가이드 이름은 base-guidelines.json 의 밑줄 없는 최상위 키다(기본 넷 + register_guide.py 로 등록한 것).
 명령은 같은 파일에서 읽는다(_checks · _checks_short · _checks_common · _checker_kind · _pack_sections · _s14_blocks). 짧은 글 판정은
 스스로 한다(줄글이고 공백 제외 _short_chars 이하면 장르 명령을 _checks_short 로). 검사기 종료 코드는 보지 않고
 출력만 읽는다. 검사기가 exit 2 를 내거나 죽으면 그 stderr 를 흘리고 exit 2.
