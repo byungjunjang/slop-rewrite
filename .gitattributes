@@ -23,3 +23,8 @@ CLAUDE.md export-ignore
 tools export-ignore
 taste/** export-ignore
 taste/README.md -export-ignore
+
+# toss 키트는 공개본에 싣는다. 다만 글 모음 본문은 토스피드에 실린 타인의 글 전문이라 뺀다(2026-10-13).
+# 공개본에는 가이드·통계·목표치·워크시트·글 주소 목록(urls.txt)이 남는다. 본문은 collect.py 로 다시 받는다.
+styleguides/toss/corpus/posts export-ignore
+styleguides/toss/corpus/posts.json export-ignore

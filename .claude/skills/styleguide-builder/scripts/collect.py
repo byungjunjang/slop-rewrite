@@ -155,6 +155,10 @@ def extract_html(html: str, slug: str, url: str, selector: str | None, noise: li
     if soup.select_one("time[datetime]") is not None:
         pub = soup.select_one("time[datetime]").get("datetime", "")
     pub = pub[:10]
+    if not pub:  # datetime 속성 없이 <time>2023.01.18</time> 처럼 글자로만 적는 사이트
+        dm = re.search(r"(\d{4})[./-]\s?(\d{1,2})[./-]\s?(\d{1,2})", _meta(soup, "time"))
+        if dm:
+            pub = f"{dm.group(1)}-{int(dm.group(2)):02d}-{int(dm.group(3)):02d}"
     author = _meta(soup, 'meta[name="author"]', 'meta[property="article:author"]', ".author-name", 'a[rel="author"]')
     tags = list(dict.fromkeys(a.get_text(strip=True) for a in soup.select('a[href*="/tag/"]')))
     excerpt = _meta(soup, ".article-excerpt", ".post-excerpt", 'meta[property="og:description"]')

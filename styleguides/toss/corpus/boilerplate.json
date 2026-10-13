@@ -1,0 +1,177 @@
+{
+ "exact": [
+  {
+   "slugs": [
+    "moneyball-1",
+    "moneyball-3",
+    "moneyball-8"
+   ],
+   "text": "Edit 윤동해 Graphic 이은호 윤자영"
+  },
+  {
+   "slugs": [
+    "moneyball-2",
+    "moneyball-5",
+    "moneyball-6"
+   ],
+   "text": "Edit 윤동해 Graphic 이은호 이제현"
+  },
+  {
+   "slugs": [
+    "moneyball-10",
+    "moneyball-11",
+    "moneyball-12",
+    "moneyball-9"
+   ],
+   "text": "Edit 윤동해 Graphic 조수희"
+  },
+  {
+   "slugs": [
+    "behindthemoney-1",
+    "behindthemoney-10",
+    "behindthemoney-11",
+    "behindthemoney-13",
+    "behindthemoney-14",
+    "behindthemoney-2",
+    "behindthemoney-6",
+    "behindthemoney-7",
+    "behindthemoney-8",
+    "behindthemoney-9"
+   ],
+   "text": "Edit 이지영 Graphic 이은호"
+  },
+  {
+   "slugs": [
+    "behindthemoney-3",
+    "tinyquestions-liberationday-1",
+    "tinyquestions-liberationday-2"
+   ],
+   "text": "Edit 이지영 Graphic 이은호 함영범"
+  }
+ ],
+ "note": "블록은 코퍼스에 그대로 두었고 boilerplate 키로만 표시했다. 제외 여부는 analyze_corpus.py --exclude-boilerplate 로 정한다.",
+ "tail": {
+  "alignmentweek23-1": [
+   23,
+   24
+  ],
+  "behindthemoney-10": [
+   22
+  ],
+  "behindthemoney-11": [
+   27
+  ],
+  "behindthemoney-12": [
+   30
+  ],
+  "behindthemoney-14": [
+   23
+  ],
+  "behindthemoney-17": [
+   27
+  ],
+  "behindthemoney-2": [
+   20,
+   21
+  ],
+  "behindthemoney-3": [
+   31,
+   32
+  ],
+  "behindthemoney-4": [
+   31
+  ],
+  "behindthemoney-5": [
+   30
+  ],
+  "behindthemoney-6": [
+   31
+  ],
+  "behindthemoney-7": [
+   28
+  ],
+  "behindthemoney-8": [
+   29
+  ],
+  "behindthemoney-9": [
+   17
+  ],
+  "epilogue": [
+   20
+  ],
+  "moneyball-1": [
+   43
+  ],
+  "moneyball-10": [
+   36
+  ],
+  "moneyball-11": [
+   41
+  ],
+  "moneyball-12": [
+   48
+  ],
+  "moneyball-2": [
+   48
+  ],
+  "moneyball-3": [
+   36
+  ],
+  "moneyball-4": [
+   47
+  ],
+  "moneyball-5": [
+   46
+  ],
+  "moneyball-6": [
+   38
+  ],
+  "moneyball-7": [
+   38
+  ],
+  "moneyball-8": [
+   45
+  ],
+  "moneyball-9": [
+   44
+  ],
+  "new-policies-2024": [
+   73
+  ],
+  "outsight-themoneybook": [
+   42,
+   43
+  ],
+  "outsight-tossads": [
+   36,
+   37
+  ],
+  "outsight-tosscommerce": [
+   42
+  ],
+  "thefirsthalf-2024": [
+   22
+  ],
+  "tinyquestions-liberationday-1": [
+   36,
+   37,
+   38
+  ],
+  "tinyquestions-liberationday-2": [
+   35
+  ],
+  "tinyquestions-liberationday-3": [
+   46,
+   47
+  ],
+  "toss-ir-story": [
+   36
+  ],
+  "toss-numbers-2023": [
+   35
+  ],
+  "tossinsu-partner-for-counselor": [
+   31
+  ]
+ }
+}

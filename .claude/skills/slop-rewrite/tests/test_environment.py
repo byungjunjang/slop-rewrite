@@ -20,7 +20,7 @@ import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[4]
-SKIP_DIRS = {".git", "__pycache__", ".pytest_cache", ".acceptance", "node_modules", "docs", "examples"}
+SKIP_DIRS = {".git", "__pycache__", ".pytest_cache", ".acceptance", "node_modules", "docs", "examples", ".slop-rewrite-test"}
 
 # import 이름과 배포판 이름이 다른 것들
 DIST_ALIAS = {"bs4": "beautifulsoup4", "yaml": "pyyaml", "PIL": "pillow", "dotenv": "python-dotenv", "fitz": "pymupdf"}

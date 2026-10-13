@@ -1,10 +1,11 @@
 # styleguides · 스타일가이드 레이어
 
-slop-rewrite 윤문의 세 레이어(원칙·스타일가이드·취향) 가운데 스타일가이드다. 한 저자 또는 한 장르의 문체를 14절 고정 구조의 가이드라인 한 파일로 적고, 검사기가 §11-1 표를 그대로 센다. slop-rewrite는 두 키트를 같은 레이어로 읽는다. 어느 키트로 고칠지는 글의 종류가 정한다. 줄글은 jangpm, 보고서는 report. 개인의 보고서 선호는 가이드가 아니라 `taste/`에 쌓는다.
+slop-rewrite 윤문의 세 레이어(원칙·스타일가이드·취향) 가운데 스타일가이드다. 한 저자 또는 한 장르의 문체를 14절 고정 구조의 가이드라인 한 파일로 적고, 검사기가 §11-1 표를 그대로 센다. slop-rewrite는 등록된 키트(jangpm, report)를 같은 레이어로 읽는다. toss 는 예시 키트이고 등록 전이다. 어느 키트로 고칠지는 글의 종류가 정한다. 줄글은 jangpm, 보고서는 report. 개인의 보고서 선호는 가이드가 아니라 `taste/`에 쌓는다.
 
 | slug | 저자 | 출처 | 정본 | 검사기 | 재생성 |
 |---|---|---|---|---|---|
 | `jangpm/` | 장피엠(개인 저자) | styleguide-builder 렌더. 템플릿·워크시트·통계에서 바이트 동일하게 다시 만든다 | `장피엠 글쓰기 문체 가이드라인.md` | `python -X utf8 .claude/skills/styleguide-builder/scripts/check_style.py --kit styleguides/jangpm 초고.md` | `render_guideline.py --kit styleguides/jangpm --version <날짜>` 뒤 `verify_guideline.py --report` |
+| `toss/` | 토스피드 이지영·정경화·이종성·심용환(타인 저자 4명) 61편. 설명 구조는 정경화, 문장의 온기는 이지영 | styleguide-builder 렌더. 고정 문구는 키트 전용 템플릿 `guideline.template.md` | `토스 글쓰기 문체 가이드라인.md` | `python -X utf8 .claude/skills/styleguide-builder/scripts/check_style.py --kit styleguides/toss 초고.md` | `render_guideline.py --kit styleguides/toss --version <날짜>` 뒤 `verify_guideline.py --report`. 등록 전이다. 공개본에는 글 모음 본문(`corpus/posts`, `posts.json`)이 없다. 타인의 글 전문이라 뺐다. 다시 받으려면 `collect.py --kit styleguides/toss --selector "article div.e1v8rpn50"` 뒤 `analyze_corpus.py --kit styleguides/toss --exclude-boilerplate` |
 | `report/` | 공공 기관 개조식 보고서(공공 저자) | 손 큐레이션. Claude·Codex 분석을 사람이 병합했고 렌더 파이프라인이 없다 | `개조식 보고서 작성 가이드라인.md` | `python -X utf8 styleguides/report/scripts/check_report.py 초안.md` | `report/README.md` 참조. 수치는 `analyze_corpus.py`로 다시 내고 표는 손으로 맞춘다 |
 
 ## 내 가이드 추가

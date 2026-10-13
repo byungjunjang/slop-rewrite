@@ -1,0 +1,23 @@
+{
+ "author": "이지영·정경화·이종성·심용환",
+ "created_by": "styleguide-builder",
+ "display": "토스",
+ "genre": "blog",
+ "paths": {
+  "corpus": "corpus",
+  "guideline": "토스 글쓰기 문체 가이드라인.md",
+  "profile": "profile.json",
+  "profile_report": "docs/style-profile.md",
+  "reading_pack": "reading-pack.md",
+  "stats": "stats.json",
+  "stats_md": "stats.md",
+  "targets": "targets.json",
+  "verification": "verification.json",
+  "worksheet": "reading-worksheet.md"
+ },
+ "schema_version": 1,
+ "site": "toss.im/tossfeed",
+ "skill_version": "0.1.0",
+ "slug": "toss",
+ "template": "guideline.template.md"
+}

@@ -1,0 +1,111 @@
+{
+ "_comment": "글별 저자와 코퍼스에서 뺀 글. 저자 목록은 토스피드 필진 페이지(이지영 editor_id=9, 정경화 editor_id=22, 이종성 editor_id=2499, 심용환 editor_id=1020)의 2026-10-13 목록이다. 이종성·심용환은 외부 기고자이고 2026-10-13 에 사용자 요청으로 더했다. 두 사람의 글은 문답 인터뷰가 없어 전부 넣었다.",
+ "writers": {
+  "2025may-curation": "이지영",
+  "2025may-curation2": "이지영",
+  "2025may-curation3": "이지영",
+  "2025may-curation4": "이지영",
+  "alignmentweek23-1": "정경화",
+  "behindthemoney-1": "심용환",
+  "behindthemoney-10": "심용환",
+  "behindthemoney-11": "심용환",
+  "behindthemoney-12": "심용환",
+  "behindthemoney-13": "심용환",
+  "behindthemoney-14": "심용환",
+  "behindthemoney-15": "심용환",
+  "behindthemoney-16": "심용환",
+  "behindthemoney-17": "심용환",
+  "behindthemoney-2": "심용환",
+  "behindthemoney-3": "심용환",
+  "behindthemoney-4": "심용환",
+  "behindthemoney-5": "심용환",
+  "behindthemoney-6": "심용환",
+  "behindthemoney-7": "심용환",
+  "behindthemoney-8": "심용환",
+  "behindthemoney-9": "심용환",
+  "epilogue": "정경화",
+  "findyoursafezone-2b": "이지영",
+  "fraud_detection_toss": "정경화",
+  "how-to-understand-users": "정경화",
+  "moneyball-1": "이종성",
+  "moneyball-10": "이종성",
+  "moneyball-11": "이종성",
+  "moneyball-12": "이종성",
+  "moneyball-2": "이종성",
+  "moneyball-3": "이종성",
+  "moneyball-4": "이종성",
+  "moneyball-5": "이종성",
+  "moneyball-6": "이종성",
+  "moneyball-7": "이종성",
+  "moneyball-8": "이종성",
+  "moneyball-9": "이종성",
+  "new-policies-2024": "정경화",
+  "new-year-resolution": "정경화",
+  "office": "이지영",
+  "outside-the-box": "정경화",
+  "outsight-themoneybook": "정경화",
+  "outsight-tossads": "이지영",
+  "outsight-tosscommerce": "정경화",
+  "silo-sajangnim": "정경화",
+  "spectrum-theater": "이지영",
+  "thefirsthalf-2024": "이지영",
+  "tinyquestions-consumption-0": "이지영",
+  "tinyquestions-liberationday-1": "심용환",
+  "tinyquestions-liberationday-2": "심용환",
+  "tinyquestions-liberationday-3": "심용환",
+  "toss-commentary-tossplace": "이지영",
+  "toss-ir-story": "정경화",
+  "toss-numbers-2023": "정경화",
+  "toss_brandcampaign": "이지영",
+  "tossbank-is-launched": "정경화",
+  "tossbank_soon": "정경화",
+  "tossinsu-partner-for-counselor": "정경화",
+  "tosspayments-office": "이지영",
+  "we-call-it-paytech": "정경화"
+ },
+ "excluded": {
+  "이지영": {
+   "interview": {
+    "reason": "문답으로 진행하는 인터뷰 글. 분류가 '인터뷰'이거나 제목·본문이 인터뷰 형식",
+    "slugs": [
+     "findyoursafezone-1a",
+     "findyoursafezone-3a",
+     "next-developer-2021-interview",
+     "tinyquestions-consumption-1",
+     "tinyquestions-copyright-2",
+     "tinyquestions-copyright-3",
+     "tinyquestions-senior-2",
+     "toss-user-interview-timeline",
+     "toss-user-interview-travel",
+     "tossdeveloper-interview",
+     "tossteam-1year-interview"
+    ]
+   },
+   "others_words": {
+    "reason": "타인의 말이 본문 대부분인 글(작가 16팀의 말, 팀원 후기)",
+    "slugs": [
+     "newyearwithtoss",
+     "outsight-spectrum"
+    ]
+   }
+  },
+  "정경화": {
+   "interview_or_others_words": {
+    "reason": "문답 인터뷰(Q. 가 셋 이상)이거나, 타인의 발표·말이 본문의 절반쯤 이상이거나, 타인의 인터뷰를 1인칭으로 옮긴 글",
+    "slugs": [
+     "alignmentweek23-3",
+     "full-swing-at-toss",
+     "interview-moneygraphy",
+     "next-agile-with-pm",
+     "outsight-financialcontent",
+     "outsight-no-more-cute",
+     "outsight-polarbear",
+     "outsight-snowman",
+     "tossinsu_vision",
+     "whitehacker_at_toss",
+     "winning_session"
+    ]
+   }
+  }
+ }
+}

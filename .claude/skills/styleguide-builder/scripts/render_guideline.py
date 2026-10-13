@@ -42,15 +42,17 @@ def parse_worksheet(text: str) -> dict[str, str]:
         m = re.match(r"^##\s+slot:([A-Za-z0-9_]+)\s*$", line)
         if m:
             if cur is not None:
-                slots[cur] = "\n".join(buf).strip()
+                slots[cur] = "\n".join(buf)
             cur, buf = m.group(1), []
         elif cur is not None:
             buf.append(line)
     if cur is not None:
-        slots[cur] = "\n".join(buf).strip()
+        slots[cur] = "\n".join(buf)
     out = {}
     for k, v in slots.items():
-        v = re.sub(r"<!--.*?-->", "", v, flags=re.S).strip()
+        # 앞뒤 빈 줄만 지운다. 첫 줄의 들여쓰기는 목록 안에 들어가는 슬롯에서 뜻이 있다.
+        v = re.sub(r"<!--.*?-->", "", v, flags=re.S).strip("\n").rstrip()
+        v = v if v.strip() else ""
         out[k] = v
     return out
 
@@ -198,7 +200,10 @@ class Renderer:
                 f"| 합쇼체 (-습니다/-입니다/-겁니다) | {self.t('pct_hapsyo.rec')}% | {self.t('pct_hapsyo.minmax')}% | {R('pct_hapsyo')['level']} |",
                 f"| 해요체 (-고요/-는데요/-네요/-세요/-까요) | {self.t('pct_haeyo.rec')}% | {self.t('pct_haeyo.minmax')}% | {R('pct_haeyo')['level']} |",
                 f"| -죠/-지요 | {_num(o['pct_jyo'])}% | | (참고) |",
-                f"| 해라체 (-다.) 본문 | 0 (인용문·소제목 제외) | {self.t('pct_haera.max')}% 이하 | {R('pct_haera')['level']} |",
+                # 해라체로 쓴 글이 코퍼스에 있으면 권장 0 이 거짓이다. 관찰값을 적는다.
+                (f"| 해라체 (-다.) 본문 | {self.t('pct_haera.rec')}% (해라체로 통일한 글이 섞인 값) | {self.t('pct_haera.max')}% 이하 | {R('pct_haera')['level']} |"
+                 if R('pct_haera').get('recommended') else
+                 f"| 해라체 (-다.) 본문 | 0 (인용문·소제목 제외) | {self.t('pct_haera.max')}% 이하 | {R('pct_haera')['level']} |"),
                 f"| 의문문 | {self.t('pct_question.rec')}% | {self.t('pct_question.max')}% 이하 | {R('pct_question')['level']} |",
                 f"| 해요체 두 문장 연속 | {self.t('consecutive_haeyo.rec')}회 | {self.t('consecutive_haeyo.max')}회 이하 | {R('consecutive_haeyo')['level']} |",
             ])
@@ -216,7 +221,8 @@ class Renderer:
         raise KeyError(f"table:{name}")
 
     def conjfreq(self, n: int) -> str:
-        items = list(self.o["conj_total"].items())[:n]
+        # stats.json 은 키 순서로 저장되므로 빈도순으로 다시 세운다.
+        items = sorted(self.o["conj_total"].items(), key=lambda kv: (-kv[1], kv[0]))[:n]
         return ", ".join(f"{k} {v}" for k, v in items)
 
     def lexfreq(self, n: int) -> str:
@@ -307,7 +313,10 @@ def main() -> int:
     a = ap.parse_args()
     kit = load_kit(a.kit)
     assert_snapshot(kit, need_stats=True, need_targets=True)
-    tpl_path = Path(a.template) if a.template else SKILL_DIR / "assets" / "templates" / f"{kit.meta.get('genre', 'blog')}.template.md"
+    # kit.json 의 "template" 은 키트 전용 템플릿이다(키트 폴더 기준 경로). 공용 템플릿의 고정 문구가 저자와 맞지 않을 때만 둔다.
+    kit_tpl = kit.meta.get("template")
+    tpl_path = (Path(a.template) if a.template else kit.root / kit_tpl if kit_tpl
+                else SKILL_DIR / "assets" / "templates" / f"{kit.meta.get('genre', 'blog')}.template.md").resolve()
     out_path = Path(a.out) if a.out else kit.guideline
     r = Renderer(kit, a.version, a.allow_todo)
     doc = r.render(read_text(tpl_path))
@@ -318,7 +327,8 @@ def main() -> int:
     unused = sorted(set(r.slots) - r.used_slots - {"post_structure", "profile_proposals", "policy_flag_notes"})
     write_text(out_path, doc if doc.endswith("\n") else doc + "\n")
     manifest = {
-        "template": str(tpl_path.relative_to(SKILL_DIR)) if str(tpl_path).startswith(str(SKILL_DIR)) else str(tpl_path),
+        "template": (str(tpl_path.relative_to(SKILL_DIR)) if tpl_path.is_relative_to(SKILL_DIR)
+                     else "kit:" + tpl_path.relative_to(kit.root).as_posix() if tpl_path.is_relative_to(kit.root) else str(tpl_path)),
         "template_sha256": sha256_file(tpl_path), "worksheet_sha256": sha256_file(kit.worksheet) if kit.worksheet.exists() else "",
         "stats_sha256": sha256_file(kit.stats_json), "targets_sha256": sha256_file(kit.targets_json),
         "profile_sha256": sha256_file(kit.profile_json), "version": a.version, "output": out_path.name,

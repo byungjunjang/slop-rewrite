@@ -17,6 +17,8 @@
 | 6 | `python -X utf8 $S/verify_guideline.py --kit $K --report` | 전부 | `verification.json` | 8항목, 실패 시 exit 1 |
 | 검사 | `python -X utf8 $S/check_style.py --kit $K 초고.md [--strict] [--subset counts]` | targets, profile | (없음) | 읽기 전용 |
 
+`analyze_corpus.py --exclude-boilerplate` 로 통계를 냈으면 `stats.json` 에 그 사실이 남고, `selftest.py` 는 같은 옵션으로 다시 돌려 바이트를 비교한다. `kit.json` 에 `template` 이 있으면 5·6 단계가 키트 전용 템플릿을 쓴다(`template-provenance.md` 「키트 전용 템플릿」).
+
 ## 입력 고정(스냅샷)
 
 `kitlib.assert_snapshot` 이 2b 이후 모든 단계에서 확인한다: `posts.json` 해시 == `posts.sha256` == `stats.corpus_sha256`, `profile.json` 해시 == `stats.profile_sha256`, `metrics.py` 해시 == `stats.metrics_sha256`, `targets.corpus_sha256` == 코퍼스. 하나라도 다르면 무엇을 다시 실행할지 한국어로 알리고 멈춘다.

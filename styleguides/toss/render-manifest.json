@@ -1,0 +1,13 @@
+{
+ "allow_todo": false,
+ "output": "토스 글쓰기 문체 가이드라인.md",
+ "output_sha256": "9967b14a7e8352e0cf5ebb23aa840105993e9de255088534e3b0f117c16c5102",
+ "profile_sha256": "7659e6ba9776b7acf64c4e708780dddad6ee260d09b4f8dff310c137aba4603c",
+ "skill_version": "0.1.0",
+ "stats_sha256": "8dd024199d0c43cb819ba7d686db031cf9f4543572ced5049827bc18a92ad205",
+ "targets_sha256": "b56a4992ef28452deed19ea12ca32c44e3c1f38e410d97e6fe9000c6fbc0dfbb",
+ "template": "kit:guideline.template.md",
+ "template_sha256": "da8f8928369bfc965d6fd8e988bbdbdaa1bbc74cd3f61bbee793676e2c6c83f6",
+ "version": "2026-10-13",
+ "worksheet_sha256": "e381e783c71ce2e6688f7c95f2f44d2b894efdd712b3f7d411382db7d7bdcd45"
+}

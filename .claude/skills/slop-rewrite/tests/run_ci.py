@@ -11,7 +11,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix='slop-rewrite-ci-') as tmp:
         target = Path(tmp) / 'repo'
         def ignore(path, names):
-            skipped = {'.git', '__pycache__', '.pytest_cache', 'docs', 'examples'} & set(names)
+            skipped = {'.git', '__pycache__', '.pytest_cache', 'docs', 'examples', '.slop-rewrite-test'} & set(names)
             if Path(path) == ROOT / 'taste':
                 skipped |= set(names) - {'README.md'}
             return skipped

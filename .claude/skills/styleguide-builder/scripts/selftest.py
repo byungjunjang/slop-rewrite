@@ -109,9 +109,12 @@ def t_control(kit) -> None:
 
 def t_idempotent(kit) -> None:
     print("[6][7] 멱등성")
+    # 통계를 낼 때 준 --exclude-boilerplate 를 그대로 준다. 빼면 반복 블록을 뺀 키트가 항상 실패한다.
+    extra = ["--exclude-boilerplate"] if kit.stats().get("boilerplate", {}).get("excluded") else []
     for script, target in (("analyze_corpus.py", kit.stats_json), ("derive_targets.py", kit.targets_json)):
         before = target.read_bytes()
-        subprocess.run([sys.executable, "-X", "utf8", str(HERE / script), "--kit", str(kit.root)], check=True, capture_output=True)
+        args = extra if script == "analyze_corpus.py" else []
+        subprocess.run([sys.executable, "-X", "utf8", str(HERE / script), "--kit", str(kit.root), *args], check=True, capture_output=True)
         check(before == target.read_bytes(), f"{script} 재실행 후 {target.name} 바이트 동일")
 
 

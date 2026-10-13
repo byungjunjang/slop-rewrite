@@ -1,0 +1,433 @@
+{
+ "_flags": [
+  {
+   "action": "상한을 2로 넓힘",
+   "metric": "conj_comma_bad",
+   "observed_max": 2,
+   "policy_max": 1
+  },
+  {
+   "action": "상한을 5로 넓힘",
+   "metric": "comma_after_subject",
+   "observed_max": 5,
+   "policy_max": 2
+  },
+  {
+   "action": "상한을 3로 넓힘",
+   "metric": "yeoreobun_dangsin",
+   "observed_max": 3,
+   "policy_max": 2
+  },
+  {
+   "action": "상한을 3로 넓힘",
+   "metric": "sensory_total",
+   "observed_max": 3,
+   "policy_max": 1
+  },
+  {
+   "action": "규칙 제외",
+   "metric": "opening_ok",
+   "observed": "2/61 true"
+  },
+  {
+   "action": "규칙 제외",
+   "metric": "closing_is_call_or_outlook",
+   "observed": "11/61 true"
+  },
+  {
+   "action": "상한을 3로 넓힘",
+   "metric": "ai_bullet_bold",
+   "observed_max": 3,
+   "policy_max": 0
+  }
+ ],
+ "_violations": [],
+ "corpus_sha256": "67ca4c5c7b8905ed759259d87cc23ec108d5bbbca0229102d2d93a2c9222ea09",
+ "n_posts": 61,
+ "rules": [
+  {
+   "envelope": {
+    "max": 68.9,
+    "min": 37.3
+   },
+   "kind": "len",
+   "label": "평균 문장 길이",
+   "level": "hard",
+   "max": 73,
+   "metric": "len_mean",
+   "min": 34,
+   "recommended": 50,
+   "source": "envelope",
+   "target_text": "34~73자 (권장 50)"
+  },
+  {
+   "envelope": {
+    "max": 10.3,
+    "min": 0.0
+   },
+   "kind": "pct",
+   "label": "100자 초과 문장",
+   "level": "hard",
+   "max": 14,
+   "metric": "pct_xlong_gt100",
+   "recommended": 3,
+   "source": "envelope",
+   "target_text": "14% 이하 (권장 3)"
+  },
+  {
+   "envelope": {
+    "max": 56.1,
+    "min": 6.8
+   },
+   "kind": "pct",
+   "label": "35자 이하 문장",
+   "level": "soft",
+   "max": 62,
+   "metric": "pct_short_le35",
+   "min": 1,
+   "recommended": 30,
+   "source": "envelope",
+   "target_text": "1~62% (권장 30)"
+  },
+  {
+   "envelope": {
+    "max": 40.9,
+    "min": 0.0
+   },
+   "kind": "pct",
+   "label": "70자 초과 문장",
+   "level": "soft",
+   "max": 45,
+   "metric": "pct_long_gt70",
+   "min": 0,
+   "recommended": 17,
+   "source": "envelope",
+   "target_text": "0~45% (권장 17)"
+  },
+  {
+   "envelope": {
+    "max": 6.09,
+    "min": 1.4
+   },
+   "kind": "spp",
+   "label": "문단당 문장",
+   "level": "hard",
+   "max": 6.6,
+   "metric": "sent_per_para_mean",
+   "min": 0.9,
+   "recommended": 3.3,
+   "source": "envelope",
+   "target_text": "0.9~6.6 (권장 3.3)"
+  },
+  {
+   "envelope": {
+    "max": 64.5,
+    "min": 0.0
+   },
+   "kind": "pct",
+   "label": "1문장 문단",
+   "level": "soft",
+   "max": 71,
+   "metric": "pct_para_1",
+   "recommended": 13,
+   "source": "envelope",
+   "target_text": "71% 이하 (권장 13)"
+  },
+  {
+   "_before_override": {
+    "level": "hard",
+    "max": 87,
+    "min": 0,
+    "target_text": "0~87% (권장 24)"
+   },
+   "envelope": {
+    "max": 78.6,
+    "min": 0.0
+   },
+   "kind": "pct",
+   "label": "합쇼체",
+   "level": "soft",
+   "max": 87,
+   "metric": "pct_hapsyo",
+   "min": 0,
+   "recommended": 24,
+   "source": "override",
+   "target_text": "0~87% (권장 24)"
+  },
+  {
+   "envelope": {
+    "max": 88.5,
+    "min": 0.0
+   },
+   "kind": "pct",
+   "label": "해요체",
+   "level": "soft",
+   "max": 98,
+   "metric": "pct_haeyo",
+   "min": 0,
+   "recommended": 14,
+   "source": "envelope",
+   "target_text": "0~98% (권장 14)"
+  },
+  {
+   "_before_override": {
+    "level": "hard",
+    "max": 100,
+    "min": null,
+    "target_text": "100% 이하 (권장 48)"
+   },
+   "envelope": {
+    "max": 98.8,
+    "min": 0.0
+   },
+   "kind": "pct",
+   "label": "해라체(-다.) 본문",
+   "level": "soft",
+   "max": 100,
+   "metric": "pct_haera",
+   "recommended": 48,
+   "source": "override",
+   "target_text": "100% 이하 (권장 48)"
+  },
+  {
+   "envelope": {
+    "max": 32,
+    "min": 0
+   },
+   "kind": "count",
+   "label": "해요체 연속",
+   "level": "soft",
+   "max": 36,
+   "metric": "consecutive_haeyo",
+   "recommended": 0,
+   "source": "envelope",
+   "target_text": "36회 이하 (권장 0)"
+  },
+  {
+   "envelope": {
+    "max": 17.9,
+    "min": 0.0
+   },
+   "kind": "pct",
+   "label": "의문문",
+   "level": "soft",
+   "max": 21,
+   "metric": "pct_question",
+   "recommended": 2,
+   "source": "envelope",
+   "target_text": "21% 이하 (권장 2)"
+  },
+  {
+   "envelope": {
+    "max": 17.9,
+    "min": 0.0
+   },
+   "kind": "pct",
+   "label": "문두 접속부사",
+   "level": "hard",
+   "max": 21,
+   "metric": "pct_conj_start",
+   "min": 0,
+   "recommended": 8,
+   "source": "envelope",
+   "target_text": "0~21% (권장 8)"
+  },
+  {
+   "envelope": {
+    "max": 2,
+    "min": 0
+   },
+   "kind": "count",
+   "label": "접속부사 뒤 쉼표",
+   "level": "hard",
+   "max": 2,
+   "metric": "conj_comma_bad",
+   "recommended": 0,
+   "source": "policy",
+   "target_text": "2회 이하 (권장 0) (다만·즉·반면·반면에 제외)"
+  },
+  {
+   "envelope": {
+    "max": 4,
+    "min": 0
+   },
+   "kind": "count",
+   "label": "접속부사 연속 문장",
+   "level": "soft",
+   "max": 5,
+   "metric": "conj_consecutive",
+   "recommended": 0,
+   "source": "envelope",
+   "target_text": "5회 이하 (권장 0)"
+  },
+  {
+   "envelope": {
+    "max": 0.97,
+    "min": 0.19
+   },
+   "kind": "ratio",
+   "label": "문장당 쉼표",
+   "level": "hard",
+   "max": 1.05,
+   "metric": "commas_per_sent",
+   "min": 0.1,
+   "recommended": 0.55,
+   "source": "envelope",
+   "target_text": "0.1~1.05 (권장 0.55)"
+  },
+  {
+   "envelope": {
+    "max": 86.2,
+    "min": 36.4
+   },
+   "kind": "pct",
+   "label": "쉼표 없는 문장",
+   "level": "soft",
+   "metric": "pct_sent_no_comma",
+   "min": 31,
+   "recommended": 61,
+   "source": "envelope",
+   "target_text": "31% 이상 (권장 61)"
+  },
+  {
+   "envelope": {
+    "max": 92.5,
+    "min": 58.1
+   },
+   "kind": "pct",
+   "label": "나열·'-고,' 쉼표 비중",
+   "level": "soft",
+   "metric": "pct_list_or_go_comma",
+   "min": 54,
+   "recommended": 77,
+   "source": "envelope",
+   "target_text": "54% 이상 (권장 77)"
+  },
+  {
+   "envelope": {
+    "max": 5,
+    "min": 0
+   },
+   "kind": "count",
+   "label": "주어 뒤 쉼표",
+   "level": "soft",
+   "max": 5,
+   "metric": "comma_after_subject",
+   "recommended": 1,
+   "source": "policy",
+   "target_text": "5회 이하 (권장 1)"
+  },
+  {
+   "envelope": {
+    "max": 2,
+    "min": 0
+   },
+   "kind": "count",
+   "label": "'예를 들어' 류",
+   "level": "hard",
+   "max": 2,
+   "metric": "ye_reul_deureo",
+   "recommended": 0,
+   "source": "policy",
+   "target_text": "2회 이하 (권장 0)"
+  },
+  {
+   "envelope": {
+    "max": 3,
+    "min": 0
+   },
+   "kind": "count",
+   "label": "여러분/당신",
+   "level": "hard",
+   "max": 3,
+   "metric": "yeoreobun_dangsin",
+   "recommended": 0,
+   "source": "policy",
+   "target_text": "3회 이하 (권장 0)"
+  },
+  {
+   "envelope": {
+    "max": 3,
+    "min": 0
+   },
+   "kind": "count",
+   "label": "감각 묘사어",
+   "level": "hard",
+   "max": 3,
+   "metric": "sensory_total",
+   "recommended": 0,
+   "source": "policy",
+   "target_text": "3회 이하 (권장 0)"
+  },
+  {
+   "envelope": {
+    "max": 1,
+    "min": 0
+   },
+   "kind": "count",
+   "label": "금지 표현",
+   "level": "hard",
+   "max": 2,
+   "metric": "banned_total",
+   "recommended": 0,
+   "source": "policy",
+   "target_text": "2회 이하 (권장 0)"
+  },
+  {
+   "envelope": {
+    "max": 0,
+    "min": 0
+   },
+   "kind": "count",
+   "label": "비선호 표기",
+   "level": "soft",
+   "max": 2,
+   "metric": "nonpref_total",
+   "recommended": 0,
+   "source": "policy",
+   "target_text": "2회 이하 (권장 0)"
+  },
+  {
+   "envelope": {
+    "max": 10.3,
+    "min": 0.0
+   },
+   "kind": "pct",
+   "label": "대조 구문(아니라/보다는/말고)",
+   "level": "soft",
+   "max": 14,
+   "metric": "pct_contrast",
+   "recommended": 2,
+   "source": "envelope",
+   "target_text": "14% 이하 (권장 2)"
+  },
+  {
+   "envelope": {
+    "n": 61,
+    "true": 0
+   },
+   "equals": false,
+   "kind": "bool",
+   "label": "끝 = 요약 문단",
+   "level": "hard",
+   "metric": "closing_is_summary",
+   "recommended": "아니오",
+   "source": "boolean",
+   "target_text": "아니오"
+  },
+  {
+   "envelope": {
+    "max": 3,
+    "min": 0
+   },
+   "kind": "count",
+   "label": "불릿 안 볼드 소제목",
+   "level": "hard",
+   "max": 3,
+   "metric": "ai_bullet_bold",
+   "recommended": 0,
+   "source": "policy",
+   "target_text": "3개 이하 (권장 0)"
+  }
+ ]
+}

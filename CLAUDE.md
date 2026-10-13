@@ -27,7 +27,7 @@ slop-rewrite/
 
 - 윤문·검토 요청을 수행할 때는 해당 스킬의 `SKILL.md` 만 따른다. 프로젝트 설정이나 코드 수정 요청에는 윤문 절차를 적용하지 않는다.
 - 모든 스크립트는 저장소 루트에서 `python -X utf8` 로 실행한다.
-- `styleguides/jangpm/` 의 완성본 가이드는 직접 편집하지 않는다. `styleguide-builder` 로 다시 렌더한다. 직접 고치면 검증 해시가 어긋난다.
+- `styleguides/jangpm/`·`styleguides/toss/` 의 완성본 가이드는 직접 편집하지 않는다. `styleguide-builder` 로 다시 렌더한다. 직접 고치면 검증 해시가 어긋난다.
 - 규칙표에 규칙을 더할 때는 `principles/ai-tells-ko.md` §5 의 절차를 따른다.
 - 코드나 규칙을 고친 뒤에는 세 스킬의 `tests/run_acceptance.py` 를 돌린다. 전부 PASS 여야 한다.
 - 사용자에게는 한국어로 답한다.

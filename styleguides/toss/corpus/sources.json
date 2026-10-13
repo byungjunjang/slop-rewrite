@@ -1,0 +1,368 @@
+{
+ "2025may-curation": {
+  "author": "Viva Republica",
+  "html_sha256": "15a4671115bc2537531ffe8b2aa2fa98338d870708d99dcf9b24f8073c3f646d",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/2025may-curation"
+ },
+ "2025may-curation2": {
+  "author": "Viva Republica",
+  "html_sha256": "9434a7ba88e6fd2822ed332d7bb3e46a8ea616d77761416be4c213da7ac1f280",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/2025may-curation2"
+ },
+ "2025may-curation3": {
+  "author": "Viva Republica",
+  "html_sha256": "4d2b5e6b74fcb0863e955320cdb2a35b5798537440bddee0bbc5f5df9aef60ca",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/2025may-curation3"
+ },
+ "2025may-curation4": {
+  "author": "Viva Republica",
+  "html_sha256": "b66f536cfbf62ef1ea93b77407b443a8462b0d0e350138c986d9d6e9baf29f62",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/2025may-curation4"
+ },
+ "alignmentweek23-1": {
+  "author": "Viva Republica",
+  "html_sha256": "d0b35bc4b10a56057f3fe29629cd8dd3f27885c105fb812a58e53709b3ef139e",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/alignmentweek23-1"
+ },
+ "behindthemoney-1": {
+  "author": "Viva Republica",
+  "html_sha256": "7cb87090c6f184dee0ee60d66f532a073e0ebdd625dfd9abf8eaec02ceaab06b",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-1"
+ },
+ "behindthemoney-10": {
+  "author": "Viva Republica",
+  "html_sha256": "e2978fe2e18c483e5a1e35d82202e997bcbec20f2a063c6d1c4ed86c0c990ee1",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-10"
+ },
+ "behindthemoney-11": {
+  "author": "Viva Republica",
+  "html_sha256": "dd73380ab78063919d03e10e6477432ae3fd613b5e1a7c6c3410320c038c86d9",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-11"
+ },
+ "behindthemoney-12": {
+  "author": "Viva Republica",
+  "html_sha256": "02e47aea02da6a922071e4e018795a23bd392c85db3051ed4f5dbab1463952b3",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-12"
+ },
+ "behindthemoney-13": {
+  "author": "Viva Republica",
+  "html_sha256": "c87971587604e14c9a815f2051aaebcb30d5af6e4def9db5f15ecb170bac88bb",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-13"
+ },
+ "behindthemoney-14": {
+  "author": "Viva Republica",
+  "html_sha256": "be287fe7d8c2fa3656a80bcfaadcce5d4b069f0d41a387afec66d9d853bd9872",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-14"
+ },
+ "behindthemoney-15": {
+  "author": "Viva Republica",
+  "html_sha256": "6782387cb7d2f7121649c4193cafbe5cd0aecf6a355d6f2417dcb5d76ea4823e",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-15"
+ },
+ "behindthemoney-16": {
+  "author": "Viva Republica",
+  "html_sha256": "e4edb9b8abd6e61868df069d1b41543fc36654fb9d97a7668db672aae6f8556d",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-16"
+ },
+ "behindthemoney-17": {
+  "author": "Viva Republica",
+  "html_sha256": "c31caa14dad09790a2196136dcf63534e024fe1fd153c462aa0ce0cf0282285e",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-17"
+ },
+ "behindthemoney-2": {
+  "author": "Viva Republica",
+  "html_sha256": "a0406675df0f8993ac762c2a7fdf3380b3918fb22f338a3bd3a43066c7f2d922",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-2"
+ },
+ "behindthemoney-3": {
+  "author": "Viva Republica",
+  "html_sha256": "8af2a0b85076cf2e2605be17ed296224ad1435e279b37fa3fbb76edfd318a515",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-3"
+ },
+ "behindthemoney-4": {
+  "author": "Viva Republica",
+  "html_sha256": "b98d726d103999a01f87513b346967db0332bb0c97d345a27f2c33191fddbd49",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-4"
+ },
+ "behindthemoney-5": {
+  "author": "Viva Republica",
+  "html_sha256": "2066c355fbf8f37b0876f4a8c55a0cfd62fbed8b4c11fffa2025d7678763c333",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-5"
+ },
+ "behindthemoney-6": {
+  "author": "Viva Republica",
+  "html_sha256": "ee9dbcd5b5f244980c7222a23beb145e68a38dc28c7c9a0903556c0bf908dde0",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-6"
+ },
+ "behindthemoney-7": {
+  "author": "Viva Republica",
+  "html_sha256": "53c8967cae5bd35608cf4e5babf53a842b24cddfb0d787f5d82c8f25b559eb18",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-7"
+ },
+ "behindthemoney-8": {
+  "author": "Viva Republica",
+  "html_sha256": "bbfc5fa719e63d9f438f116e835ae74269dc6bd45a000d7a801ac22d2804947a",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-8"
+ },
+ "behindthemoney-9": {
+  "author": "Viva Republica",
+  "html_sha256": "6cfb81ee63f8a0967ec272e483d5a01f7435e3c92efd40af0f585f95c692156a",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/behindthemoney-9"
+ },
+ "epilogue": {
+  "author": "Viva Republica",
+  "html_sha256": "61f91dbecf86ea1a0d1bca75544d0659bfc32bc674e43be2e59df921f5f8782e",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/epilogue"
+ },
+ "findyoursafezone-2b": {
+  "author": "Viva Republica",
+  "html_sha256": "dd24c19b95768927bb2ae8ef55572ab514cf500cd28b52d6b7c4fd1fd56e2558",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/findyoursafezone-2b"
+ },
+ "fraud_detection_toss": {
+  "author": "Viva Republica",
+  "html_sha256": "061ffc01570059e6be3624fd6ad9b59526fc821e28ab996a8b7685f490ebee63",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/fraud_detection_toss"
+ },
+ "how-to-understand-users": {
+  "author": "Viva Republica",
+  "html_sha256": "724559fe7f100b85ec499e028334403c8c2abc06f1f3d0d27be63706802ad488",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/how-to-understand-users"
+ },
+ "moneyball-1": {
+  "author": "Viva Republica",
+  "html_sha256": "e34bf191a529570b450d526ebee995dc92bc252019e179622f2df03b119a9714",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/moneyball-1"
+ },
+ "moneyball-10": {
+  "author": "Viva Republica",
+  "html_sha256": "675500adf46163b818d0d8189174657cf87e7fefdb004a0e814b9965d5e7fcfa",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/moneyball-10"
+ },
+ "moneyball-11": {
+  "author": "Viva Republica",
+  "html_sha256": "f89fe0d9d8da51e1588d3ab4084baf992a7de909fda27ad3514d330669ab9299",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/moneyball-11"
+ },
+ "moneyball-12": {
+  "author": "Viva Republica",
+  "html_sha256": "d20b751aecb1e626749dc7fd6d6b3cad7e9cd2f750bc539ca78ef78f64876b2f",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/moneyball-12"
+ },
+ "moneyball-2": {
+  "author": "Viva Republica",
+  "html_sha256": "c66bb519441d10236b51b5216244e5a84cf94851a4ef9b9c309ba6a2af3bca0a",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/moneyball-2"
+ },
+ "moneyball-3": {
+  "author": "Viva Republica",
+  "html_sha256": "0f91644456c3ef05b91223978d780284d27f9f98a3c6d76711481c446eed10a1",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/moneyball-3"
+ },
+ "moneyball-4": {
+  "author": "Viva Republica",
+  "html_sha256": "5828113e76a1296d6320f90d612569778c16bdc72d5a809a83c7bfeda1f5964b",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/moneyball-4"
+ },
+ "moneyball-5": {
+  "author": "Viva Republica",
+  "html_sha256": "8623cb06953c86eca36e228d4b95d9eafc96f9697b563b9fe4500dcc4c822b57",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/moneyball-5"
+ },
+ "moneyball-6": {
+  "author": "Viva Republica",
+  "html_sha256": "bb7d50b055c5f6dfbb0997ed5dbf9dfd606cb5a8169709e660cca6e50094261e",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/moneyball-6"
+ },
+ "moneyball-7": {
+  "author": "Viva Republica",
+  "html_sha256": "9a9af20ba01af2fd3c2f7c6d855924c9d61cb91f022f0ebbbc5c4e5e49ae99a1",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/moneyball-7"
+ },
+ "moneyball-8": {
+  "author": "Viva Republica",
+  "html_sha256": "4db70ac7ce6a22598b6563e79f714ea8e1ef6e47076e14b6d1d7b15ed5dc7a67",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/moneyball-8"
+ },
+ "moneyball-9": {
+  "author": "Viva Republica",
+  "html_sha256": "2df8e7a49a759d0296fae282744500fc093b7d10b998691e8a9158482e0d2bf7",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/moneyball-9"
+ },
+ "new-policies-2024": {
+  "author": "Viva Republica",
+  "html_sha256": "019e462fdff8a467bab7c4b02b076bf8c67747b73e944d43ec11556cda1c279f",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/new-policies-2024"
+ },
+ "new-year-resolution": {
+  "author": "Viva Republica",
+  "html_sha256": "390b93e585a87227a1473a5b25fd4d66ca8c8ca68bc2164d6016f02bd671c308",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/new-year-resolution"
+ },
+ "office": {
+  "author": "Viva Republica",
+  "html_sha256": "f3e6a76433d166cee94e1fc58f67752c92783ebfd1f5cb6c3e866d92eb0b8ca1",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/office"
+ },
+ "outside-the-box": {
+  "author": "Viva Republica",
+  "html_sha256": "38c0304ab62ec0532283be800ae9921de015ca59b792200518f9ea5e431032d1",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/outside-the-box"
+ },
+ "outsight-themoneybook": {
+  "author": "Viva Republica",
+  "html_sha256": "5e9aeab8b4ea8480fd817f8a2a6a9ed68143e682563f15f2be34ad3267cb6abe",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/outsight-themoneybook"
+ },
+ "outsight-tossads": {
+  "author": "Viva Republica",
+  "html_sha256": "d4b59b33ec958eb3ce0d76a58a685b49ab1014db1b9ba3e809c6667bf40a1f50",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/outsight-tossads"
+ },
+ "outsight-tosscommerce": {
+  "author": "Viva Republica",
+  "html_sha256": "b7e1b303e57afa9648fbd77a3346a13645d82df555f526044ec96878b1f13982",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/outsight-tosscommerce"
+ },
+ "silo-sajangnim": {
+  "author": "Viva Republica",
+  "html_sha256": "febaeb6d316ab6a35bf077851391aec36da8496332447632d93956a2bbf5cc25",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/silo-sajangnim"
+ },
+ "spectrum-theater": {
+  "author": "Viva Republica",
+  "html_sha256": "d7fd6e5562149b9780765ca36c0a0869dc57f40bd6cf50ed2dfc4d28082fb160",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/spectrum-theater"
+ },
+ "thefirsthalf-2024": {
+  "author": "Viva Republica",
+  "html_sha256": "eac8f21e6ba5244c0ee60b5b799c70cadf6df01e559af79fb521f199f7951f2b",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/thefirsthalf-2024"
+ },
+ "tinyquestions-consumption-0": {
+  "author": "Viva Republica",
+  "html_sha256": "879137a3fdf5fccd5676642b79bd8a92c7a7242e0f15644ccbbe172032f7b240",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/tinyquestions-consumption-0"
+ },
+ "tinyquestions-liberationday-1": {
+  "author": "Viva Republica",
+  "html_sha256": "c152ac9b673225c6fb3964c8e75699c7e95705e4a08bc90b70451303db381828",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/tinyquestions-liberationday-1"
+ },
+ "tinyquestions-liberationday-2": {
+  "author": "Viva Republica",
+  "html_sha256": "84912a4e0339e1c84c36cb434b3cadf7b987ae01d1b5ff2bcaf008ec634e95c6",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/tinyquestions-liberationday-2"
+ },
+ "tinyquestions-liberationday-3": {
+  "author": "Viva Republica",
+  "html_sha256": "9cd9cef8c784af25e477d331ef700a69c618c132d71667e52368a22b4a2f2b3e",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/tinyquestions-liberationday-3"
+ },
+ "toss-commentary-tossplace": {
+  "author": "Viva Republica",
+  "html_sha256": "655fefc25b34bbc73ca7df0edd94fb5137e735a5d45811c809c36659a869be92",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/toss-commentary-tossplace"
+ },
+ "toss-ir-story": {
+  "author": "Viva Republica",
+  "html_sha256": "c4251738bb25b85ed147c5ee81d7b7e18c910e3cd95d66699f02308b815382ec",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/toss-ir-story"
+ },
+ "toss-numbers-2023": {
+  "author": "Viva Republica",
+  "html_sha256": "1f746ef1dd36ac4a06c9e1d18b454a69b81c4a378e27e7cdb13cc5a015ac924a",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/toss-numbers-2023"
+ },
+ "toss_brandcampaign": {
+  "author": "Viva Republica",
+  "html_sha256": "ab3385fba7f69c73527aff72fed3adcfb5dac8ce79ea12938266d80a3d582856",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/toss_brandcampaign"
+ },
+ "tossbank-is-launched": {
+  "author": "Viva Republica",
+  "html_sha256": "7ab9bdd2f7e8045a9227603cd4caf2b6461e53e54fd6594dd31edeb41aae3522",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/tossbank-is-launched"
+ },
+ "tossbank_soon": {
+  "author": "Viva Republica",
+  "html_sha256": "c685e7ed6d1dcb10276ed8b39b130eb6abc60e9c8bbad296696af74b4bd89398",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/tossbank_soon"
+ },
+ "tossinsu-partner-for-counselor": {
+  "author": "Viva Republica",
+  "html_sha256": "8348fb23481bcb774b2185fa39e330a14baa9ac67beaf7f95599763b8f15f24e",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/tossinsu-partner-for-counselor"
+ },
+ "tosspayments-office": {
+  "author": "Viva Republica",
+  "html_sha256": "e2722806c74034eb9c9cb2b878a5daac8dfebc77a4e11db8b53454c49ca04436",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/tosspayments-office"
+ },
+ "we-call-it-paytech": {
+  "author": "Viva Republica",
+  "html_sha256": "4d61a8b0c34ea387f33851f4b0375500ae23654ce8f0f0e0d06bd87719cce04b",
+  "strategy": "selector:article div.e1v8rpn50",
+  "url": "https://toss.im/tossfeed/article/we-call-it-paytech"
+ }
+}

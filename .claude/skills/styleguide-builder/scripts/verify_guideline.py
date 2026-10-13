@@ -62,7 +62,8 @@ def main() -> int:
     if not kit.render_manifest.exists():
         rec("① render-manifest 존재", False, "render_guideline.py 를 먼저 실행"); return 1
     mf = read_json(kit.render_manifest)
-    tpl = SKILL_DIR / mf["template"] if not Path(mf["template"]).is_absolute() else Path(mf["template"])
+    tpl = (kit.root / mf["template"][4:] if mf["template"].startswith("kit:")
+           else SKILL_DIR / mf["template"] if not Path(mf["template"]).is_absolute() else Path(mf["template"]))
     same = (mf["template_sha256"] == sha256_file(tpl) and mf["worksheet_sha256"] == sha256_file(kit.worksheet)
             and mf["stats_sha256"] == sha256_file(kit.stats_json) and mf["targets_sha256"] == sha256_file(kit.targets_json)
             and mf["profile_sha256"] == sha256_file(kit.profile_json))
