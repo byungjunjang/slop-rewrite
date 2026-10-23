@@ -16,6 +16,7 @@
 출력만 읽는다. 검사기가 exit 2 를 내거나 죽으면 그 stderr 를 흘리고 exit 2.
 
 검수의 FAIL 조건은 넷이다. 장르 hard > 0, 원칙 S1 > 0 또는 S2 finding > 0, 취향 [규칙] > 0(사용자가 뺀 것 제외), 대조 S1 > 0.
+원문이 양식 문서(is_form)면 _form_skip 의 규칙(개조식 H2·원칙 AT-34)은 보이되 막지 않는다. 사전 검사도 같다(2026-10-23, 0019).
 마지막 줄은 `판정: PASS|FAIL · …` 이고 그 위에 조건부로 두 줄이 온다. 둘 다 판정과 종료 코드를 바꾸지 않는다.
   빠진 것: 수치 N · 인용 N · 부정 N · 자리표시자 N · 링크 N · 각주 N     # check_fidelity 의 summary.dropped. 전부 0 이면 없다
   경고: 많이 줄었다 · 글자 <비율> · 항목 <비율>                          # 결과 ÷ 원문 이 SHRINK_WARN 미만일 때. 원문에 항목이 없으면 항목 부분은 없다
@@ -84,8 +85,10 @@ def _json(r: subprocess.CompletedProcess, what: str):
 # ---------------------------------------------------------------------------
 # 검사기별 요약
 # ---------------------------------------------------------------------------
-def genre_lines(kind: str, r: subprocess.CompletedProcess, verify: bool) -> tuple[int, int, list]:
-    """(hard, soft, 줄 목록). kind = _checker_kind[가이드]. style 은 check_style JSON, report 는 check_report 텍스트."""
+def genre_lines(kind: str, r: subprocess.CompletedProcess, verify: bool,
+                skip: frozenset = frozenset()) -> tuple[int, int, list]:
+    """(hard, soft, 줄 목록). kind = _checker_kind[가이드]. style 은 check_style JSON, report 는 check_report 텍스트.
+    skip 은 양식 문서라 막지 않는 규칙 ID(form_skip)다. report 의 hard 줄에만 ID 가 있다."""
     if kind == "style":
         d = _json(r, "check_style")
         if "error" in d:
@@ -104,30 +107,50 @@ def genre_lines(kind: str, r: subprocess.CompletedProcess, verify: bool) -> tupl
     hm = re.search(r"^\[반드시 고칠 것\]\s*(\d+)건", text, re.M)
     sm = re.search(r"^\[검토할 것\]\s*(\d+)건", text, re.M)
     hard, soft = (int(hm.group(1)) if hm else 0), (int(sm.group(1)) if sm else 0)
+    exempt = [l for l in report_hard_lines(text) if _report_id(l) in skip]
+    hard -= len(exempt)
     if verify:
-        sec = re.search(r"^\[반드시 고칠 것\][^\n]*\n(.*?)(?=^\[|\Z)", text, re.M | re.S)
-        lines = [l for l in (sec.group(1) if sec else "").splitlines() if l.strip()]
+        lines = [l for l in report_hard_lines(text) if l not in exempt] + [l + FORM_TAIL for l in exempt]
     else:
-        lines = [l for l in text.strip("\n").splitlines()]
+        lines = [l + FORM_TAIL if l in exempt else l for l in text.strip("\n").splitlines()]
     return hard, soft, lines
 
 
-def ai_lines(d: dict, verify: bool) -> tuple[int, int, int, int, list]:
-    """(S1, S2 비강등, S3, 강등 수, 줄 목록)."""
+_REPORT_HARD = re.compile(r"^\[반드시 고칠 것\][^\n]*\n(.*?)(?=^\[|\Z)", re.M | re.S)
+_REPORT_ID = re.compile(r"^\s*-\s*([A-Z]+\d+)\b")
+FORM_TAIL = " · 양식 문서라 막지 않음"
+
+
+def report_hard_lines(text: str) -> list:
+    """check_report 의 [반드시 고칠 것] 항목 줄. 한 줄이 「 - H2 …」처럼 규칙 ID 로 시작한다."""
+    sec = _REPORT_HARD.search(text)
+    return [l for l in (sec.group(1) if sec else "").splitlines() if l.strip()]
+
+
+def _report_id(line: str) -> str:
+    m = _REPORT_ID.match(line)
+    return m.group(1) if m else ""
+
+
+def ai_lines(d: dict, verify: bool, skip: frozenset = frozenset()) -> tuple[int, int, int, int, list]:
+    """(S1, S2 비강등, S3, 강등 수, 줄 목록). skip 은 양식 문서라 막지 않는 규칙 ID(form_skip)다."""
     s1 = s2 = s3 = demoted = 0
     lines, infos = [], []
     for f in d["findings"]:
         if f.get("demoted"):
             demoted += 1
-        if f["severity"] == "S1":
+        exempt = f["rule"] in skip
+        if f["severity"] == "S1" and not exempt:
             s1 += 1
-        elif f["severity"] == "S2" and not f.get("demoted"):
+        elif f["severity"] == "S2" and not f.get("demoted") and not exempt:
             s2 += 1
         elif f["severity"] == "S3":
             s3 += 1
-        blocking = f["severity"] == "S1" or (f["severity"] == "S2" and not f.get("demoted"))
+        blocking = not exempt and (f["severity"] == "S1" or (f["severity"] == "S2" and not f.get("demoted")))
         if blocking:
             lines.append(f'{f["line"]}:{f["col"]}  [{f["rule"]} {f["severity"]}] {f["detail"]}  "{f["excerpt"]}"  → {f["fix"]}')
+        elif exempt:
+            lines.append(f'{f["line"]}:{f["col"]}  [{f["rule"]} {f["severity"]}] {f["detail"]}  "{f["excerpt"]}"{FORM_TAIL}')
         elif not verify:
             infos.append(f'[info] {f["rule"]} {f["detail"]} {f["count"]}회/{f["unit"] or "문서"}  "{f["excerpt"]}"')
     return s1, s2, s3, demoted, lines + infos
@@ -189,16 +212,15 @@ def _cut(s: str, n: int) -> str:
     return s if len(s) <= n else s[:n] + "…"
 
 
-def genre_flags(kind: str, r: subprocess.CompletedProcess) -> list:
-    """장르 검사기의 hard 항목을 한 줄씩 짧게. 프롬프트의 「원문에서 이미 걸린 곳」에 싣는다."""
+def genre_flags(kind: str, r: subprocess.CompletedProcess, skip: frozenset = frozenset()) -> list:
+    """장르 검사기의 hard 항목을 한 줄씩 짧게. 프롬프트의 「원문에서 이미 걸린 곳」에 싣는다. skip 의 항목은 싣지 않는다."""
     if kind == "style":
         d = _json(r, "check_style")
         if "error" in d:
             return []
         return [f"장르 · {x['label']} {x['value']} (목표 {x['target']})" for x in d["rows"]
                 if not x["ok"] and x["level"] == "hard"]
-    sec = re.search(r"^\[반드시 고칠 것\][^\n]*\n(.*?)(?=^\[|\Z)", r.stdout, re.M | re.S)
-    return ["장르 · " + _cut(l.strip(" -"), 60) for l in (sec.group(1) if sec else "").splitlines() if l.strip()]
+    return ["장르 · " + _cut(l.strip(" -"), 60) for l in report_hard_lines(r.stdout) if _report_id(l) not in skip]
 
 
 def _block(title: str, lines: list) -> list:
@@ -263,7 +285,9 @@ def strip_numeric(section: str) -> str:
     return "\n".join(out)
 
 
-def pack(bg: dict, guide: str, sections: tuple) -> str:
+def pack(bg: dict, guide: str, sections: tuple, taste_md: Path | None = None) -> str:
+    """taste_md 는 인수 테스트가 표본 취향으로 길이를 잴 때만 준다(2026-10-23, 0021). 기본은 주인의 취향 문서다."""
+    taste_md = TASTE_MD if taste_md is None else taste_md
     out = [f"# 읽기 묶음 · {guide} ({bg['_genre_of'].get(guide, '공통')})", ""]
     # 문체 이름으로 보고서 여부를 추측하지 않는다. 본문을 읽는 담당이 판단한다.
     out += [REPORT_TITLES.read_text(encoding="utf-8").strip(), ""]
@@ -283,8 +307,8 @@ def pack(bg: dict, guide: str, sections: tuple) -> str:
                 unicodedata.normalize("NFC", (ROOT / exp).read_text(encoding="utf-8")).strip(), ""]
     rules_md = unicodedata.normalize("NFC", RULES_MD.read_text(encoding="utf-8").replace("\r\n", "\n"))
     out += [explain_human(load_rules(), rules_md), ""]
-    if TASTE_MD.exists():
-        taste = unicodedata.normalize("NFC", TASTE_MD.read_text(encoding="utf-8").replace("\r\n", "\n"))
+    if taste_md.exists():
+        taste = unicodedata.normalize("NFC", taste_md.read_text(encoding="utf-8").replace("\r\n", "\n"))
         cut = re.search(r"^## 7\.", taste, re.M)
         out += ["## 취향 §0~§6", "", (taste[:cut.start()] if cut else taste).strip("\n"), ""]
     else:
@@ -341,6 +365,12 @@ _FORM_TABLE = re.compile(r"^\|[ \t]*(?:항목|구분)[ \t]*\|[ \t]*내용[ \t]*\
 
 def is_form(text: str) -> bool:
     return len(_FORM_HEAD.findall(text)) >= 2 or bool(_FORM_TABLE.search(text))
+
+
+def form_skip(bg: dict, orig_text: str) -> frozenset:
+    """원문이 양식 문서면 막지 않는 규칙 ID(_form_skip). 프롬프트는 양식의 소제목·굵은 글씨를 지키고 맨 위에 요약 줄을
+    만들지 말라고 한다. 검사기는 우선권을 읽지 않으므로 그 지시와 부딪히는 규칙을 여기서 내린다(2026-10-23, 0019)."""
+    return frozenset(bg.get("_form_skip", [])) if is_form(orig_text) else frozenset()
 
 
 def hint(text: str, is_html: bool) -> str:
@@ -527,6 +557,9 @@ def check(bg: dict, guide: str, genre: str, src: Path, ext: str,
         tmp = Path(tempfile.mkdtemp(prefix="check_all-")) / src.name
         tmp.write_bytes(body.encode("utf-8"))
     file_posix = (tmp or src).as_posix()
+    # 양식 문서인지는 원본으로 본다. 검수에서 결과가 양식을 깨도 지킬 대상은 원본의 양식이다. 원본이 없으면 대조 단계가 exit 2 로 끝난다
+    orig_text = body if not verify else (strip_trailer(Path(orig).read_text(encoding="utf-8")) if Path(orig).exists() else "")
+    fskip = form_skip(bg, orig_text)
 
     ai = _json(run_cmd(bg["_checks_common"]["ai_tells"], genre=genre, file=file_posix), "check_ai_tells")
     chars = ai["stats"].get("chars_nospace", 0)
@@ -545,13 +578,13 @@ def check(bg: dict, guide: str, genre: str, src: Path, ext: str,
             return 2, "", []
         table = bg["_checks_short"] if short else bg["_checks"]
         gr = run_cmd(table[guide][ext], file=file_posix)
-        g_hard, g_soft, glines = genre_lines(kind, gr, verify)
-        flags += genre_flags(kind, gr)
+        g_hard, g_soft, glines = genre_lines(kind, gr, verify, fskip)
+        flags += genre_flags(kind, gr, fskip)
         out += _block(f"장르 · {guide}{' (짧은 글 명령)' if short else ''} · hard {g_hard} / soft {g_soft}", glines)
 
-    s1, s2, s3, demoted, alines = ai_lines(ai, verify)
+    s1, s2, s3, demoted, alines = ai_lines(ai, verify, fskip)
     flags += [f'{f["line"]}행 · {f["rule"]} {f["detail"]} 「{_cut(f["excerpt"], 24)}」' for f in ai["findings"]
-              if f["severity"] == "S1" or (f["severity"] == "S2" and not f.get("demoted"))]
+              if f["rule"] not in fskip and (f["severity"] == "S1" or (f["severity"] == "S2" and not f.get("demoted")))]
     out += _block(f"원칙 · check_ai_tells --genre {genre} · S1 {s1} · S2 {s2} · S3 {s3} · 강등 {demoted}", alines)
 
     td = _json(run_cmd(bg["_checks_common"]["taste"], file=file_posix), "check_taste")

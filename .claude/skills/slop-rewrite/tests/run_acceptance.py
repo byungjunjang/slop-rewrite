@@ -16,6 +16,8 @@ FIX = ".claude/skills/slop-rewrite/tests/fixtures"
 FID = ".claude/skills/slop-rewrite/scripts/check_fidelity.py"
 PRINCIPLES = ROOT / "principles"
 BRIEF = SKILL / "references" / "subagent.md"
+# 길이 상한은 이 표본 취향으로 잰다. 주인의 취향 문서는 쓸수록 늘어 따로 잰다(2026-10-23, 결정 기록 0021)
+TASTE_SAMPLE = ROOT / ".claude" / "skills" / "taste-builder" / "tests" / "fixtures" / "writing-taste.sample.md"
 SKILL_DOCS = (SKILL / "SKILL.md", SKILL / "references" / "modes.md", BRIEF, PRINCIPLES / "invariants.md")
 
 
@@ -183,7 +185,7 @@ def test_ai_tells_selftest():
 def test_ai_tells_list_handshake():
     r = run(CHECK, "--list", "--genre", "줄글")
     first = r.stdout.splitlines()[0]
-    assert first.startswith("ai-tells-ko 2026-09-17 · 규칙 67 ("), first
+    assert first.startswith("ai-tells-ko 2026-10-23 · 규칙 67 ("), first   # 규칙 파일 버전. 규칙을 고치면 함께 올린다
     assert "활성" in first and "--genre 줄글" in first, first
     assert r.returncode == 0
     print("PASS test_ai_tells_list_handshake")
@@ -673,7 +675,13 @@ def test_check_all_pack():
     for s in ("## 가이드 §0", "### 11-1.", "[목소리]", "[구조]", "[예시]", "[감정]", "[작업]", "[보존]",
               "## 3. 문장 길이와 호흡", "### 7-1.", "## 7. 보류·모순"):
         assert s not in r.stdout, s
-    assert len(r.stdout) - len((ROOT / "styleguides/report/title-claims.md").read_text(encoding="utf-8")) < 9500, len(r.stdout)
+    # 길이는 표본 취향으로 잰다. 주인의 취향 칸은 test_prompt_build 가 _prompt_taste_budget 으로 따로 본다(0021)
+    sys.path.insert(0, str(SKILL / "scripts"))
+    import check_all as C
+    bg = C.load_bg()
+    sample_pack = C.pack(bg, "장피엠", tuple(bg["_pack_sections"]["장피엠"]), taste_md=TASTE_SAMPLE)
+    assert "## 취향 §0~§6" in sample_pack and "W-" in sample_pack, "표본 취향이 묶음에 실린다"
+    assert len(sample_pack) - len((ROOT / "styleguides/report/title-claims.md").read_text(encoding="utf-8")) < 9500, len(sample_pack)
     g = run(ALL, "--guide", "개조식", "--pack", f"{FIX}/ai-draft-report.md")
     assert g.returncode == 0, g.stderr
     for s in ("### 11-1.", "### 11-3.", "[항목]", "[표기]"):
@@ -1107,7 +1115,7 @@ def test_diagnose_human_rules():
 
 def test_priority_chain_sync():
     """우선권 체인 세 곳(SKILL.md 공통, subagent.md 단계 2, 취향 문서 머리)이 같은 순서다.
-    브리프가 취향 [관찰]을 가이드 hard 위에 두었던 어긋남(2026-09-14)을 다시 만들지 않는다.
+    2026-10-23(0019)부터 체인은 층위 여섯뿐이고 등급을 섞지 않는다. 옛 체인은 등급을 섞어 담당이 프롬프트에서 적용할 수 없었다.
     취향 문서 머리의 정본은 taste-builder 템플릿이다. 실물 문서는 사용자마다 있을 수도 없을 수도 있어 있을 때만 본다."""
     def chain(text: str, rx: str) -> list:
         m = re.search(rx, text, re.M)
@@ -1127,7 +1135,9 @@ def test_priority_chain_sync():
     import prompt as P
     one = chain(P.PRIORITY, r"^우선권 · (.+?)\. ")
     assert one == skill, (one, skill)
-    assert "자연스러움" in skill and skill.index("자연스러움") > skill.index("S2"), skill   # 막는 규칙이 자연스러움 앞이다
+    # 쓰는 법(원문 말끝·목록·양식 유지)이 가이드보다 앞이어야 가이드의 어체 규칙이 원문 말끝을 이기지 않는다
+    assert skill == ["사용자 지시", "불변식", "취향", "쓰는 법", "가이드", "원칙"], skill
+    assert "그 안에서 가장 자연스럽게 쓴다" in P.PRIORITY and "「충돌」" in P.PRIORITY, P.PRIORITY
     docs = [ROOT / ".claude" / "skills" / "taste-builder" / "references" / "taste-template.md",
             ROOT / ".claude" / "skills" / "taste-builder" / "tests" / "fixtures" / "writing-taste.sample.md",
             ROOT / "taste" / "writing-taste.md"]
@@ -1542,13 +1552,18 @@ def test_prompt_build():
     from check_ai_tells import load_rules
     bg = C.load_bg()
     budget = bg["_prompt_budget"]
-    # 1 · 예산 — 기권 줄을 실은 경우와 걸린 곳 블록이 가득 찬 경우 둘 다 잰다(2026-10-02)
+    # 1 · 예산 — 기권 줄을 실은 경우와 걸린 곳 블록이 가득 찬 경우 둘 다 잰다(2026-10-02). 취향은 표본 문서로 잰다(0021)
     many = [f"{i}행 · AT-18 줄표 남용 「" + "가" * 24 + "…」" for i in range(1, 40)]
     for g in C.guide_names(bg):
         for kw in (dict(clean=True), dict(flags=many), dict(flags=many, orig=ROOT / FIX / "form-plan.md")):
-            _, text = _build(g, **kw)
+            _, text = _build(g, taste_md=TASTE_SAMPLE, **kw)
             assert len(text) <= budget, (g, list(kw), len(text))
     P, jang = _build("장피엠")
+    # 주인의 취향 줄은 따로 잰다(0021). 넘으면 취향 규칙을 합치거나 줄인다. 공개본·CI 에는 주인 문서가 없다
+    own = ROOT / "taste" / "writing-taste.md"
+    if own.exists():
+        block = "\n".join(P.taste_rules(own))
+        assert len(block) <= bg["_prompt_taste_budget"], (len(block), bg["_prompt_taste_budget"])
     # 4 · 판정 질문 블록과 예문 블록은 싣지 않는다(2026-10-06. 판정 질문은 다른 블록과 겹치고, 예문은 가이드 말투를 끌어온다)
     for r in load_rules().rules:
         if r.detect == "human":
@@ -1719,6 +1734,85 @@ def test_fidelity_unitless_number():
     print("PASS test_fidelity_unitless_number")
 
 
+def test_check_all_form_skip():
+    """2026-10-23(0019) · 양식 문서는 프롬프트가 소제목·굵은 글씨를 지키고 맨 위 요약 줄을 만들지 말라고 한다.
+    그대로 따른 결과를 개조식 H2(첫 3줄 결론)와 원칙 AT-34(굵은 라벨 목록)가 막아 사업계획서가 매번 FAIL 이었다.
+    양식 문서면 두 규칙은 보이되 막지 않고 사전 검사에도 싣지 않는다. 양식 표지를 지운 같은 글은 계속 막는다."""
+    form = f"{FIX}/form-skip.md"
+    out = run(ALL, "--guide", "개조식", "--orig", form, form)
+    assert out.returncode == 0 and out.stdout.splitlines()[-1].startswith("판정: PASS"), out.stdout[-600:]
+    assert out.stdout.count("양식 문서라 막지 않음") == 2 and "H2 " in out.stdout and "[AT-34 S2]" in out.stdout, out.stdout
+    pre = run(ALL, "--guide", "개조식", "--hint", form).stdout.splitlines()[-1]
+    assert pre.startswith("사전 검사: 깨끗"), pre
+    with tempfile.TemporaryDirectory() as d:
+        plain = Path(d) / "plain.md"
+        text = (ROOT / form).read_text(encoding="utf-8").replace("## □ ", "## ").replace("| 항목 | 내용 |", "| 이름 | 값 |")
+        plain.write_bytes(text.encode("utf-8"))
+        bad = run(ALL, "--guide", "개조식", "--orig", str(plain), str(plain))
+        assert bad.returncode == 1 and "장르 hard 1" in bad.stdout and "S2 1" in bad.stdout, bad.stdout[-600:]
+        assert "양식 문서라 막지 않음" not in bad.stdout
+    print("PASS test_check_all_form_skip")
+
+
+def test_prompt_dedupe():
+    """2026-10-23(0019) · 같은 지시는 한 줄만, 반대 방향이면 우선권(쓰는 법 > 가이드)에서 진 쪽을 프롬프트에서만 뺀다.
+    가이드 파일과 검토 묶음(--pack)은 그대로다."""
+    P, jang = _build("장피엠")
+    gd = jang.split("## 가이드")[1].split("## ")[0]
+    for gone in ("섹션 시퀀스", "문학적 비유", "결론 요약", "이모지 목록", "평가 형용사", "없는 경험"):
+        assert gone not in gd, gone
+    for kept in ("[종결] 확인된 사실을 추측형으로", "종속절 중첩", "불릿 안 볼드 소제목", "없는 요소를"):
+        assert kept in gd, kept
+    assert "평가어" in jang and "1. 비유로 말하기." in jang, "뺀 항목은 원칙·먼저 잡는 것 셋에 남는다"
+    toss = _build("토스")[1].split("## 가이드")[1].split("## ")[0]
+    assert "돌아오지 않는 비유" not in toss and "답 없는 질문" in toss, toss
+    biz = _build("업무")[1].split("## 가이드")[1].split("## ")[0]
+    assert "처음 부른 이름" not in biz and "사물이 주어로" not in biz, biz
+    assert "할 말을 예고하는 문장(「~에 대해 안내드리고자 합니다」, 「다음과 같이" in biz, "괄호 안 쉼표에서 나누지 않는다"
+    rep = _build("개조식", orig=ROOT / FIX / "ai-draft-report.md")[1]
+    assert P.PARA not in rep and P.REPORT_BULLETS in rep and P.LIST_KEEP in rep, "개조식은 문단 재작성 줄 대신 불릿 줄"
+    assert "같은 개념에 같은 용어" not in rep and "약어는 첫 등장에 풀고" in rep
+    assert P.PARA in jang
+    full = run(ALL, "--guide", "장피엠", "--pack", f"{FIX}/ai-draft-prose.md").stdout
+    assert "문학적 비유" in full and "섹션 시퀀스" in full, "검토 묶음은 가이드 줄을 덜지 않는다"
+    print("PASS test_prompt_dedupe")
+
+
+def test_at18_heading_caption_exempt():
+    """2026-10-23 · 굵은 글씨만으로 된 소제목 줄과 그림·표 설명 줄의 줄표는 AT-18 에서 세지 않는다(§4 「제목 한정 줄표」).
+    사업계획서 결과가 양식 예외(0019) 뒤에도 이 두 자리로 FAIL 이었다. 같은 줄표를 산문에 쓰면 계속 센다."""
+    head = "# 계획\n\n"
+    exempt = ("**(1) 2026년 하반기 ~ 2027년 상반기 – 고객층 확인**\n\n"
+              "[그림: 도구 지형 — 범용 어시스턴트 / 코딩 에이전트]\n\n"
+              "**(2) 2027년 하반기 – 확장**\n\n"
+              "본문은 줄표 없이 쓴다. 다만 이 문장 — 하나만 줄표가 있다.\n")
+    prose = ("첫 단계는 고객층 확인 – 비용 구조 검증이다.\n\n"
+             "도구 지형은 넓다 — 범용 어시스턴트가 있다.\n\n"
+             "다음은 확장 – 지역을 늘린다.\n\n"
+             "본문은 줄표 없이 쓴다. 다만 이 문장 — 하나만 줄표가 있다.\n")
+    with tempfile.TemporaryDirectory() as d:
+        a = json.loads(run(CHECK, "--genre", "개조식", "--json", _tmp_md(d, "a.md", head + exempt)).stdout)
+        b = json.loads(run(CHECK, "--genre", "개조식", "--json", _tmp_md(d, "b.md", head + prose)).stdout)
+    a, b = (a[0] if isinstance(a, list) else a), (b[0] if isinstance(b, list) else b)
+    assert a["summary"]["raw"].get("AT-18", 0) == 1 and not any(f["rule"] == "AT-18" for f in a["findings"]), a["summary"]
+    assert b["summary"]["raw"].get("AT-18", 0) == 4 and any(f["rule"] == "AT-18" for f in b["findings"]), b["summary"]
+    print("PASS test_at18_heading_caption_exempt")
+
+
+def test_taste_offer_on_feedback():
+    """2026-10-23(0020) · 결과에 글쓰기 피드백을 받으면 답한 뒤 「취향으로 기록할까요?」를 묻고, 예일 때만 기록한다.
+    거절하면 같은 대화에서 다시 묻지 않는다. 윤문 스킬·응답 형식·taste-builder 세 문서가 같은 말을 한다."""
+    ask = "취향으로 기록할까요?"
+    skill = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+    modes = (SKILL / "references" / "modes.md").read_text(encoding="utf-8")
+    tb = (ROOT / ".claude" / "skills" / "taste-builder" / "SKILL.md").read_text(encoding="utf-8")
+    capture = tb.split("## 모드 C")[1].split("## Step 1")[0]
+    assert ask in skill and ask in modes and ask in capture, "세 문서가 같은 질문을 쓴다"
+    assert "다시 묻지 않는다" in modes and "동의 없이 기록하지 않는다" in capture
+    assert "먼저 꺼내지 않는다" not in capture, "모드 C 가 권하기와 어긋나지 않는다"
+    print("PASS test_taste_offer_on_feedback")
+
+
 if __name__ == "__main__":
     from test_report_titles import test_report_titles
     test_report_titles()
@@ -1814,4 +1908,8 @@ if __name__ == "__main__":
     test_business_guide()
     test_report_table_not_item_text()
     test_fidelity_unitless_number()
+    test_check_all_form_skip()
+    test_prompt_dedupe()
+    test_at18_heading_caption_exempt()
+    test_taste_offer_on_feedback()
     print("ALL PASS")

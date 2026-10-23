@@ -32,17 +32,20 @@ FIRST3 = [
     "앞에서 한 말의 되풀이. 뺀다. 이 글에만 있는 사실이 들어 있으면 그 사실만 남기고 줄인다.",
 ]
 
-PRIORITY = ("우선권 · 사용자 지시 > 불변식 > 취향 [규칙] > 스타일가이드 hard > 원칙 AI 티 S1 > S2 > 자연스러움 > "
-            "취향 [경향]·[관찰] > 스타일가이드 soft > 원칙 S3. 자연스러움 앞의 규칙은 검수가 막으니 반드시 지키고 "
-            "그 안에서 가장 자연스럽게 쓴다. 뒤의 규칙이 자연스러움과 부딪히면 자연스러움을 따르고 트레일러에 적는다.")
+# 2026-10-23 · 층위 순서만 쓴다(결정 기록 0019). 등급을 섞은 옛 체인은 이 프롬프트의 가이드·원칙 줄에 등급 표시가 없어 적용할 수 없었다.
+# 등급은 검수가 막는지만 정한다. 쓰는 법이 가이드보다 앞이어야 원문 말끝·목록·양식을 지키는 줄이 가이드의 어체 규칙에 지지 않는다.
+PRIORITY = ("우선권 · 사용자 지시 > 불변식 > 취향 > 쓰는 법 > 가이드 > 원칙. 불변식은 「지키는 것」, 쓰는 법은 「먼저 잡는 것 셋」과 "
+            "「쓰는 법」, 원칙은 「지우는 것」이다. 같은 자리에 반대 방향 지시가 걸리면 검수가 막는 규칙이라도 앞쪽을 따르고 "
+            "트레일러 「충돌」 줄에 적는다. 그 밖에는 검수가 막는 규칙을 지키고 그 안에서 가장 자연스럽게 쓴다.")
 
 LIST_KEEP = ("- 원문의 목록(불릿·번호)은 목록 모양으로 두고 항목 문장만 퇴고한다. 여러 항목을 한 문단이나 한 문장으로 합치지 않고, "
              "개수와 순서는 되도록 원문대로 둔다. 군더더기 항목은 뺄 수 있다.")
+PARA = "- 산문 문단은 자리를 땜질하지 말고 문단 단위로 다시 쓴다. 문단 순서·병합·분할은 스스로 정한다."
 # 2026-10-06 · 사업계획서에서 원문에 없던 한 줄 요약을 문서 맨 위에 넣어 사용자가 나쁘게 봤다. 핵심은 기존 첫 문단 안으로 올린다.
 WRITE = [
     "- 쓰기 전에 누가 읽고 읽은 뒤 무엇을 할지 정한다. 핵심 판단은 원문의 첫 문단 안으로 올리고, 문단의 요점은 그 문단 첫 문장에 둔다"
     "(시간순 문서는 순서를 지킨다). 원문에 없던 요약 줄·요약 문단을 문서 맨 위나 양식 구역 밖에 새로 만들지 않는다.",
-    "- 산문 문단은 자리를 땜질하지 말고 문단 단위로 다시 쓴다. 문단 순서·병합·분할은 스스로 정한다.",
+    PARA,
     # 2026-10-06 설계안 2 · 바로 위 줄이 목록까지 문단으로 다시 쓰게 했다(4차 평가 iter 24 → 7줄, ctx 13 → 7줄). 모양만 지키고 문장은 퇴고한다.
     LIST_KEEP,
     "- 길이는 묶지 않는다. 핵심이 아닌 문장은 빼도 된다. 뺀 문장은 작업 기록의 「뺀 것」에 적는다.",
@@ -109,22 +112,51 @@ def taste_rules(taste_md: Path) -> list[str]:
     return out
 
 
+_OPEN, _CLOSE = "(「『[", ")」』]"
+
+
+def _split_items(s: str) -> list[str]:
+    """「, 」로 이은 나열을 항목으로 나눈다. 괄호·낫표 안의 쉼표에서는 나누지 않는다."""
+    out, depth, start = [], 0, 0
+    for i, ch in enumerate(s):
+        if ch in _OPEN:
+            depth += 1
+        elif ch in _CLOSE:
+            depth = max(0, depth - 1)
+        elif ch == "," and depth == 0 and s.startswith(" ", i + 1):
+            out.append(s[start:i])
+            start = i + 2
+    return out + [s[start:]]
+
+
+def _drop_items(sent: str, words: list) -> str:
+    """문장 안 나열에서 words 의 표지어가 든 항목을 뺀다. 항목이 다 빠지면 빈 문자열."""
+    end = "." if sent.endswith(".") else ""
+    kept = [x for x in _split_items(sent[:len(sent) - len(end)]) if not any(w in x for w in words)]
+    return ", ".join(kept) + end if kept else ""
+
+
 def s14_lines(bg: dict, guide: str) -> list[str]:
     """가이드 §14 압축 블록에서 _prompt_s14_blocks 라벨 줄만. 줄글이면 분포 목표 문장을 뺀다(Q1).
-    _prompt_s14_drop 의 표지어가 든 문장도 뺀다(2026-10-06, 말끝은 build_prompt 의 ENDING 줄이 정한다)."""
+    _prompt_s14_drop 의 표지어가 든 문장도 뺀다(2026-10-06, 말끝은 build_prompt 의 ENDING 줄이 정한다).
+    _prompt_s14_drop_items 는 라벨 줄 안 나열에서 항목 하나씩 뺀다. 원칙·불변식에 같은 지시가 있거나 우선권에서 진 항목이다(2026-10-23, 0019)."""
     gp = guide_path(bg, guide) if guide != "없음" else None
     if gp is None:
         return []
     labels = bg.get("_prompt_s14_blocks", {}).get(guide) or \
         [x for x in bg.get("_s14_blocks", {}).get(guide, []) if x != "AI 티"]
     drop = bg.get("_prompt_s14_drop", {}).get(guide, [])
+    items = bg.get("_prompt_s14_drop_items", {}).get(guide, {})
     body = md_section(_read(gp), "14")
     lines = []
     for l in body.split("\n"):
         if not ((m := _S14_LABEL.match(l)) and m.group(1) in labels):
             continue
-        if drop:
+        words = items.get(m.group(1), [])
+        if drop or words:
             kept = [s for s in re.split(r"(?<=[.])\s+", l[m.end():].strip()) if not any(w in s for w in drop)]
+            if words:
+                kept = [x for x in (_drop_items(s, words) for s in kept) if x]
             l = f"[{m.group(1)}] " + " ".join(kept)
         lines.append(l)
     text = "\n".join(lines)
@@ -189,8 +221,9 @@ def build_prompt(bg: dict, guide: str, orig: Path, flags: list, record: str,
     s14 = s14_lines(bg, guide)
     if s14:
         out += [f"## 가이드 · {guide}", *s14, ""]
+    # 2026-10-23 · 개조식은 서술 문단을 불릿으로 나눈다(REPORT_BULLETS). 문단 단위 재작성 줄과 반대 방향이라 싣지 않는다(0019)
     out += ["## 지우는 것 (AI 티)", drop, "",
-            "## 쓰는 법", *WRITE]
+            "## 쓰는 법", *(w for w in WRITE if not (genre == "개조식" and w == PARA))]
     if ending:
         out.append(ENDING.format(ENDING_NAME[ending]))
     if form:
