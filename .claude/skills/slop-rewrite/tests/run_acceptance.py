@@ -185,7 +185,7 @@ def test_ai_tells_selftest():
 def test_ai_tells_list_handshake():
     r = run(CHECK, "--list", "--genre", "줄글")
     first = r.stdout.splitlines()[0]
-    assert first.startswith("ai-tells-ko 2026-10-23 · 규칙 67 ("), first   # 규칙 파일 버전. 규칙을 고치면 함께 올린다
+    assert first.startswith("ai-tells-ko 2026-10-26 · 규칙 67 ("), first   # 규칙 파일 버전. 규칙을 고치면 함께 올린다
     assert "활성" in first and "--genre 줄글" in first, first
     assert r.returncode == 0
     print("PASS test_ai_tells_list_handshake")
@@ -1345,7 +1345,9 @@ def test_fidelity_placeholder_added_s1():
 
 def test_brief_places_holes_in_record():
     """Q5 · 윤문 프롬프트·원칙·모드는 본문 자리표시자 대신 작성자 확인으로 보낸다.
-    2026-09-30 · 윤문 지시는 subagent.md 가 아니라 한 장 프롬프트(prompt.py)에 있어 그쪽을 본다."""
+    2026-09-30 · 윤문 지시는 subagent.md 가 아니라 한 장 프롬프트(prompt.py)에 있어 그쪽을 본다.
+    2026-10-26 · 설명표의 권장 예·수정 원칙 칸도 본다. 마지막 문장은 FAIL 줄 끝에, 사람 판단 행은 칸 전체가 검토 묶음에 실린다.
+    같은 날 · 블로그 가이드(장피엠·토스)의 검토 묶음도 본다. 가이드 §11-2 가 자리표시자를 남기라고 했었다."""
     _, b = _build("장피엠")
     assert "작성자 확인" in b
     for gone in ("`[근거 필요: …]` 를", "`[사례 필요: …]` 를", "`[마무리 필요: 권유·전망]` 을"):
@@ -1355,6 +1357,13 @@ def test_brief_places_holes_in_record():
     assert "본문에 자리표시자를 넣지 않는다" in inv
     modes = (SKILL / "references" / "modes.md").read_text(encoding="utf-8")
     assert "본문에는 표시가 없으므로" in modes
+    sys.path.insert(0, str(SKILL / "scripts"))
+    from check_ai_tells import load_rules
+    holes = [r.id for r in load_rules().rules if re.search(r"\[[^\]]*필요[^\]]*\]", r.good)]
+    assert not holes, holes
+    for g in ("장피엠", "토스"):
+        p = run(ALL, "--guide", g, "--pack", f"{FIX}/ai-draft-prose.md").stdout
+        assert "자리표시자로 남" not in p, g
     print("PASS test_brief_places_holes_in_record")
 
 
@@ -1799,6 +1808,20 @@ def test_at18_heading_caption_exempt():
     print("PASS test_at18_heading_caption_exempt")
 
 
+def test_at20_step_label_exempt():
+    """2026-10-26 · 단계 라벨 제목(「1단계:」·「Step 1:」)의 콜론은 AT-20 에서 세지 않는다. 사용자가 이 꼴이 맞다고 정했다.
+    윤문 결과가 이 콜론을 띄운 가운뎃점으로 바꾼 일이 있었다(stop-slop-ko 점검). 부제 콜론 제목은 계속 센다."""
+    steps = ("# 가이드\n\n### 1단계: 하고 싶은 일 정리하기\n\n본문이다.\n\n"
+             "### 2 단계: 역할 나누기\n\n본문이다.\n\n### Step 3: 설정 파일 만들기\n\n본문이다.\n")
+    titles = "# 가이드\n\n## 노코드: 새로운 시작\n\n본문이다.\n\n## 자동화: 다음 걸음\n\n본문이다.\n"
+    with tempfile.TemporaryDirectory() as d:
+        a = json.loads(run(CHECK, "--genre", "줄글", "--json", _tmp_md(d, "a.md", steps)).stdout)
+        b = json.loads(run(CHECK, "--genre", "줄글", "--json", _tmp_md(d, "b.md", titles)).stdout)
+    assert a["summary"]["raw"].get("AT-20", 0) == 0, a["summary"]["raw"]
+    assert b["summary"]["raw"].get("AT-20", 0) == 2, b["summary"]["raw"]
+    print("PASS test_at20_step_label_exempt")
+
+
 def test_taste_offer_on_feedback():
     """2026-10-23(0020) · 결과에 글쓰기 피드백을 받으면 답한 뒤 「취향으로 기록할까요?」를 묻고, 예일 때만 기록한다.
     거절하면 같은 대화에서 다시 묻지 않는다. 윤문 스킬·응답 형식·taste-builder 세 문서가 같은 말을 한다."""
@@ -1911,5 +1934,6 @@ if __name__ == "__main__":
     test_check_all_form_skip()
     test_prompt_dedupe()
     test_at18_heading_caption_exempt()
+    test_at20_step_label_exempt()
     test_taste_offer_on_feedback()
     print("ALL PASS")

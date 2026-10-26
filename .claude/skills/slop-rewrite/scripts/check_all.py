@@ -92,7 +92,8 @@ def genre_lines(kind: str, r: subprocess.CompletedProcess, verify: bool,
     if kind == "style":
         d = _json(r, "check_style")
         if "error" in d:
-            return 0, 0, [f"(장르 검사기 오류: {d['error']})"]
+            print(f"장르 검사기 오류: {d['error']}", file=sys.stderr)
+            raise SystemExit(2)
         rows = [x for x in d["rows"] if not x["ok"] and (x["level"] == "hard" or not verify)]
         lines = ["| 항목 | 값 | 목표 | 판정 |", "|---|---|---|---|"] if rows else []
         for x in rows:
