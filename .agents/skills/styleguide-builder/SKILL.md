@@ -10,7 +10,8 @@ description: 한 저자의 한국어 블로그나 로컬 Markdown 글에서 문�
 - 이 파일에서 세 단계 위가 프로젝트 루트다. 명령은 루트에서 실행한다.
 - 본체의 상대 `references/`, `assets/`, `scripts/`, `tests/` 경로는 `.claude/skills/styleguide-builder/` 기준이다. `$S`와 `$K`는 본체가 정의한 경로로 설정한다.
 - 숫자는 기존 분석·렌더 스크립트로 계산한다. 완성 가이드라인을 직접 고치지 말고 워크시트·프로파일·템플릿을 수정한 후 재렌더한다.
-- HTML 수집에 필요한 Python 패키지가 없으면 해당 기능에 필요한 의존성만 설치한다. 로컬 Markdown 처리에 웹 수집용 패키지를 요구하지 않는다.
+- HTML 수집에는 `beautifulsoup4`와 `lxml`이 모두 필요하다. 빠진 패키지만 설치한다. 로컬 Markdown 처리에 웹 수집용 패키지를 요구하지 않는다.
+- PowerShell에서는 `$S`와 `$K`를 문자열 변수로 설정하고 스크립트 경로를 `"$S/<script>.py"`, 키트 경로를 `"$K"`로 감싼다. 워크시트 복사는 `Copy-Item -LiteralPath <템플릿> -Destination "$K/reading-worksheet.md"`, 보고서 폴더 생성은 `New-Item -ItemType Directory -Path "$K/docs" -Force`로 수행한다. 폴더 생성이 성공한 뒤 렌더 명령을 실행한다. Bash의 줄 끝 역슬래시를 쓰지 않고 Python 명령을 한 줄로 실행한다.
 - 웹 수집은 사용자가 지정한 소스 범위에서 수행하고, 네트워크 제한이 있으면 확보된 로컬 자료로 진행 가능한 부분을 처리한다. 가져오지 못한 글을 읽었다고 하지 않는다.
 - 본체가 정한 분할 읽기는 현재 세션의 서브에이전트 도구가 있고 위임이 허용될 때만 사용한다. 그렇지 않으면 같은 읽기 절차를 순차 수행한다.
 - 검증을 통과한 키트만 기존 `register_guide.py`로 등록한다. 공용 등록부는 `.claude/skills/slop-rewrite/references/base-guidelines.json`이다.

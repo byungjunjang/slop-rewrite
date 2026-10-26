@@ -37,7 +37,7 @@ slop-rewrite 의 기본 줄글 가이드(장피엠)를 내 문체로 바꾸는 �
 
 - 스킬 디렉터리: `.claude/skills/styleguide-builder/` (프로젝트 루트 기준). 아래에서 `$S` = `.claude/skills/styleguide-builder/scripts`, `$K` = `styleguides/<slug>`.
 - 모든 명령은 프로젝트 루트에서 `python -X utf8 $S/<script>.py` 로 실행한다(Windows 한글 출력). 스크립트가 없으면 추측해서 짜지 말고 사용자에게 알린다.
-- 의존성: 표준 라이브러리. HTML 수집만 `beautifulsoup4`(+`lxml` 선택). `--md-dir` 경로는 bs4 없이 동작.
+- 의존성: 표준 라이브러리. HTML 수집에는 `beautifulsoup4`와 `lxml`이 모두 필요하다. `--md-dir` 경로는 두 패키지 없이 동작.
 - 단계별 입출력·멱등 계약·오류 표는 `references/pipeline.md`.
 
 ## Step 0: 입력 확정
@@ -81,9 +81,9 @@ python -X utf8 $S/selftest.py --kit $K
 
 ```bash
 python -X utf8 $S/extract_reading_pack.py --kit $K
-cp .claude/skills/styleguide-builder/assets/reading-worksheet.template.md $K/reading-worksheet.md
 ```
 
+- `reading-worksheet.md`가 없으면 `.claude/skills/styleguide-builder/assets/reading-worksheet.template.md`를 `$K/reading-worksheet.md`로 복사한다. 기존 워크시트는 덮어쓰지 않는다.
 - `reading-pack.md` Part A(글별 첫·끝 문단, 표제, 리듬 후보)는 전부 읽는다. 전독 대상 글(20편 이하면 전부, 초과면 pack 머리의 목록)은 `corpus/posts/<slug>.md` 로 읽는다.
 - 워크시트를 채운다. 슬롯 형식·증거 유형은 `references/slot-catalog.md`, 고르는 기준은 `references/reading-guide.md`. 인용은 **원문 그대로**, 숫자는 슬롯(`{{n:…}}`, `{{one_in:…}}`, `{{rhythm:slug:pN}}`)으로만.
 - `post_structure` 표(글마다 도입 유형: 이력·경험 / 질문 / 정의·배경 / 결론·주장)를 먼저 채운다. §6-1 편수가 여기서 나온다.
@@ -92,9 +92,10 @@ cp .claude/skills/styleguide-builder/assets/reading-worksheet.template.md $K/rea
 
 ## Step 4: 프로파일 보고서 (선택)
 
-```bash
-mkdir -p $K/docs && python -X utf8 $S/render_guideline.py --kit $K --version <YYYY-MM-DD> \
-  --template .claude/skills/styleguide-builder/assets/templates/profile-report.template.md --out $K/docs/style-profile.md
+`$K/docs` 폴더가 없으면 먼저 만든다. 폴더 생성에 성공한 뒤 아래 명령을 한 줄로 실행한다.
+
+```text
+python -X utf8 $S/render_guideline.py --kit $K --version <YYYY-MM-DD> --template .claude/skills/styleguide-builder/assets/templates/profile-report.template.md --out $K/docs/style-profile.md
 ```
 
 5개 지표(문장 길이·호흡 / 접속·부호 / 종결어미 / 정보 배열 / 어휘·구조)의 숫자만 담은 보고서. 사용자가 분석 근거를 따로 원할 때만.

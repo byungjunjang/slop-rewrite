@@ -49,6 +49,35 @@ def test_skill_doc():
     print("PASS test_skill_doc")
 
 
+def test_codex_entrypoints():
+    """Codex가 세 스킬을 찾고 같은 본체와 자료를 읽을 수 있어야 한다."""
+    entries = ROOT / ".agents" / "skills"
+    for name in ("slop-rewrite", "styleguide-builder", "taste-builder"):
+        entry = entries / name / "SKILL.md"
+        md = entry.read_text(encoding="utf-8")
+        parts = md.split("---\n", 2)
+        assert len(parts) == 3 and not parts[0], (name, "frontmatter 없음")
+        header, body = parts[1:]
+        assert re.search(rf"^name: {re.escape(name)}$", header, re.M), name
+        description = re.search(r"^description: (.+)$", header, re.M)
+        assert description and description[1].strip(), (name, "description 없음")
+        assert entry.parents[3] == ROOT, (name, "루트 깊이 변경")
+        base = ROOT / ".claude" / "skills" / name
+        assert (base / "SKILL.md").is_file(), (name, "본체 없음")
+        assert f"`{(base / 'SKILL.md').relative_to(ROOT).as_posix()}`" in body, name
+        for path in re.findall(r"`((?:\.claude|\.agents)/[^`]+)`", body):
+            assert (ROOT / path).exists(), (name, path)
+        for path in re.findall(r"`((?:references|assets|scripts|tests)/[^`]+)`", body):
+            assert (base / path).exists(), (name, path)
+        for directory in ("scripts", "references", "assets"):
+            assert not (entry.parent / directory).exists(), (name, "본체 복사본")
+        if name == "slop-rewrite":
+            assert "코드·PR·프로젝트 설정 검토에는 쓰지 않는다" in description[1]
+            assert "명령 한 줄" in body and "담당이 명령을 실행" in body
+            assert "서브에이전트 도구가 없거나" in body and "본 컨텍스트" in body
+    print("PASS test_codex_entrypoints")
+
+
 def test_modes_doc():
     md = (SKILL / "references" / "modes.md").read_text(encoding="utf-8")
     assert "취향 0건, 가이드 hard 1건, 원칙 S1 2건, 사람 판단 3건" in md
@@ -1852,6 +1881,7 @@ if __name__ == "__main__":
     from test_report_titles import test_report_titles
     test_report_titles()
     test_skill_doc()
+    test_codex_entrypoints()
     test_modes_doc()
     test_base_guidelines_resolve()
     test_base_guidelines_common()
