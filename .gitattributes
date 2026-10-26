@@ -31,3 +31,9 @@ styleguides/toss/corpus/posts.json export-ignore
 
 # 설명 페이지(Vercel 배포본)는 원본 저장소에만 둔다. 사용자 결정(2026-10-26).
 site export-ignore
+
+# 보고서 분석 중간 자료와 과거 분석 기록은 내부에 보관한다. 중간 자료는 parse_ko.py 로 다시 만든다.
+styleguides/report/corpus/items_ko.jsonl export-ignore
+styleguides/report/corpus/docs_ko.json export-ignore
+styleguides/report/corpus/titles_ko.json export-ignore
+styleguides/report/analysis-codex export-ignore

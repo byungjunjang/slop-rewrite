@@ -1,6 +1,6 @@
 # styleguides/report — 개조식 보고서 작성 가이드라인 키트
 
-`개조식 보고서 작성 가이드라인.md`의 근거 자료와 검사 도구를 모아 둔 폴더다. `styleguides/jangpm/`과 달리 styleguide-builder가 만든 키트가 아니다. 2026-09-07에 Claude 분석(이 폴더의 `scripts/`·`corpus/`·`stats.md`)과 Codex 분석(`analysis-codex/`)을 사람이 병합해 가이드라인을 썼다. 병합본의 수치 표(§4-1 항목 길이, §5 종결 비율 등)는 `stats.md`에서 왔다. 렌더·verify 파이프라인은 없으므로 수치를 바꾸려면 `analyze_corpus.py`를 다시 돌리고 가이드라인의 표를 손으로 맞춘다.
+`개조식 보고서 작성 가이드라인.md`의 근거 자료와 검사 도구를 모아 둔 폴더다. `styleguides/jangpm/`과 달리 styleguide-builder가 만든 키트가 아니다. 2026-09-07에 Claude 분석(이 폴더의 `scripts/`·`corpus/`·`stats.md`)과 Codex의 독립 분석을 사람이 병합해 가이드라인을 썼다. 병합본의 수치 표(§4-1 항목 길이, §5 종결 비율 등)는 `stats.md`에서 왔다. 렌더·verify 파이프라인은 없으므로 수치를 바꾸려면 `analyze_corpus.py`를 다시 돌리고 가이드라인의 표를 손으로 맞춘다.
 
 ## 구성
 
@@ -12,13 +12,11 @@
 | `corpus/raw_hashes.json` | 원본 PDF 13개의 sha256 |
 | `corpus/raw/` | 원본 PDF. `*.pdf`는 gitignore라 저장소에 없다. `fetch_sources.py`로 다시 받는다 (2026-09-08 재수집: 13개 전부 해시 일치, 총 406MB) |
 | `corpus/text/` | 추출 텍스트 22개. **고정 코퍼스**. 통계는 이 파일들에서 나온다 |
-| `corpus/items_ko.jsonl`, `docs_ko.json`, `titles_ko.json` | `parse_ko.py` 산출. NABO Focus 합본 4,042항목 + 개별호 182항목 + 국립국어원 예시 191항목 |
+| `corpus/items_ko.jsonl`, `docs_ko.json`, `titles_ko.json` | `parse_ko.py` 산출. 공개본에는 포함하지 않으며 필요할 때 다시 만든다. NABO Focus 합본 4,042항목 + 개별호 182항목 + 국립국어원 예시 191항목 |
 | `corpus/gov-press/` | 정책브리핑 보도자료 33편(공공누리 제1유형). 검사기가 사람이 쓴 정부 문서를 막는지 재는 코퍼스이고 통계에는 쓰지 않는다(2026-09-23 R1) |
 | `stats.json`, `stats.md` | `analyze_corpus.py` 산출. 가이드라인 수치의 출처 |
 | `scripts/` | `fetch_sources.py`, `parse_ko.py`, `analyze_corpus.py`, `check_report.py` |
 | `samples/bad_draft.md` | 검사기 대조군. 검사하면 종료 코드 1이 나와야 정상 |
-| `docs/style-profile.md` | Claude 분석본의 근거 보고서. 자료별 열람 범위·인용·분석 방법 |
-| `analysis-codex/` | Codex의 독립 분석 축약본. 공식 출처 15건의 확보 기록(`manifest.json`, 해시), 표본 49단위 측정 결과, 사용자가 준 참고문헌 목록 원본(`input_reference.md`). 원문 추출 텍스트·스크린샷·스크립트(10MB)는 2026-09-14에 트리에서 빼고 원본 저장소의 태그 `provenance/report-2026-09-07`에 두었다 |
 
 ## 다시 만들기
 
