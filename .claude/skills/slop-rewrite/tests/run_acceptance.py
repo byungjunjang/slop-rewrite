@@ -1299,6 +1299,18 @@ def test_ai_tells_at43_substitutes():
     print("PASS test_ai_tells_at43_substitutes")
 
 
+def test_ai_tells_at22_conjugations():
+    """AT-22 는 「보여 주고」만이 아니라 「보여줍니다·보여준다·말해 줍니다·알려 줬다」도 센다. 「주」 글자만 받던
+    정규식이 「줍·준·줘·줬」 활용형을 놓쳤다(2026-10-26 보강). 주어가 목록 밖이거나 목적어 자리면 세지 않는다."""
+    with tempfile.TemporaryDirectory() as d:
+        p = _tmp_md(d, "a.md", "이 결과는 방향 전환이 필요하다는 것을 보여줍니다. 데이터는 변화를 보여준다. "
+                               "숫자가 모든 것을 말해 줍니다. 결과가 이를 보여 주었다. 통계가 답을 알려 줬다. "
+                               "팀장이 결과를 보여줍니다.\n")
+        r = json.loads(run(CHECK, "--genre", "줄글", "--json", p).stdout)
+    assert r["summary"]["raw"].get("AT-22", 0) == 5, r["summary"]["raw"]
+    print("PASS test_ai_tells_at22_conjugations")
+
+
 def test_check_all_pack_numeric_free():
     """Q1 · 장피엠 묶음의 §14 에 분포 목표가 남지 않는다. 문체 지시 문장은 남는다."""
     p = run(ALL, "--guide", "장피엠", "--pack", f"{FIX}/ai-draft-prose.md").stdout
@@ -1904,6 +1916,7 @@ if __name__ == "__main__":
     test_diagnose_human_rules()
     test_priority_chain_sync()
     test_ai_tells_at43_substitutes()
+    test_ai_tells_at22_conjugations()
     test_guides_defer_to_invariants()
     test_check_all_taste_skip()
     test_taste_scope_is_provenance()

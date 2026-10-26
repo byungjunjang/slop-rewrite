@@ -28,3 +28,6 @@ taste/README.md -export-ignore
 # 공개본에는 가이드·통계·목표치·워크시트·글 주소 목록(urls.txt)이 남는다. 본문은 collect.py 로 다시 받는다.
 styleguides/toss/corpus/posts export-ignore
 styleguides/toss/corpus/posts.json export-ignore
+
+# 설명 페이지(Vercel 배포본)는 원본 저장소에만 둔다. 사용자 결정(2026-10-26).
+site export-ignore
