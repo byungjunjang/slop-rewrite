@@ -3,12 +3,13 @@
 """writing-taste.md ↔ cases.jsonl 정합 검사.
 
   python validate_taste.py --doc taste/writing-taste.md [--ledger taste/cases/cases.jsonl]
-exit 0 = 통과 (stdout: OK rules=R cases=C), 1 = 위반 (stderr: E<n> 줄)
+exit 0 = 통과 (stdout: OK rules=R cases=C. 윤문 프롬프트의 취향 줄이 상한을 넘으면 「경고:」 한 줄이 더 붙는다), 1 = 위반 (stderr: E<n> 줄)
 """
 import argparse
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[4]   # scripts → taste-builder → skills → .claude → 프로젝트 루트
@@ -22,6 +23,10 @@ DETECT_PARSE_RE = re.compile(r"^(\S+)(?: (\d+)/(문서|문단|문장))?(?: `([^`
 EXAMPLE_RE = re.compile(r" — 예: (.*?) → (.*?) — (?=검출: |갱신 )")
 DETECT_KINDS = ("regex", "literal", "density", "human")
 LITERAL_SEP = " · "   # check_ai_tells.py 와 같은 구분자 (공백 + U+00B7 + 공백)
+# 윤문 프롬프트 「이 사람의 취향」 블록의 상한. slop-rewrite base-guidelines.json 의 _prompt_taste_budget 과 같다(0021).
+# 다른 스킬의 코드를 부르지 않으므로 slop-rewrite prompt.taste_rules 의 줄 만들기를 옮겨 왔다. slop-rewrite 인수 테스트가 둘을 맞춰 본다
+PROMPT_TASTE_BUDGET = 1500
+PROMPT_LINE_RE = re.compile(r"^W-\d+ \[(?:규칙|경향|관찰)\] .+$", re.M)
 
 
 def grade_for(n):
@@ -32,6 +37,18 @@ def grade_for(n):
     if n == 1:
         return "관찰"
     return "보류"
+
+
+def prompt_taste_len(text):
+    """윤문 프롬프트에 실리는 취향 줄(「- W-NN [등급] 진술 (적용: 범위)」를 줄바꿈으로 이은 것)의 글자 수."""
+    text = unicodedata.normalize("NFC", text)
+    cut = re.search(r"^## 7\.", text, re.M)
+    lines = []
+    for m in PROMPT_LINE_RE.finditer(text[:cut.start()] if cut else text):
+        head, _, rest = m.group(0).partition(" — 적용: ")
+        scope = rest.split(" — ", 1)[0].split(" (", 1)[0].strip()
+        lines.append(f"- {head.strip()}" + (f" (적용: {scope})" if scope else ""))
+    return len("\n".join(lines))
 
 
 def _unquote(s):
@@ -169,6 +186,9 @@ def main(argv=None):
         print("\n".join(errors), file=sys.stderr)
         return 1
     print(f"OK rules={nr} cases={nc}")
+    n = prompt_taste_len(Path(a.doc).read_text(encoding="utf-8"))
+    if n > PROMPT_TASTE_BUDGET:
+        print(f"경고: 윤문 프롬프트의 취향 줄이 {n:,}자로 상한 {PROMPT_TASTE_BUDGET:,}자를 넘는다. 사용자와 함께 규칙을 합치거나 줄인다")
     return 0
 
 

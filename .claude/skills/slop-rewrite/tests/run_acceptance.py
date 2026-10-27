@@ -704,7 +704,7 @@ def test_check_all_pack():
     for s in ("## 가이드 §0", "### 11-1.", "[목소리]", "[구조]", "[예시]", "[감정]", "[작업]", "[보존]",
               "## 3. 문장 길이와 호흡", "### 7-1.", "## 7. 보류·모순"):
         assert s not in r.stdout, s
-    # 길이는 표본 취향으로 잰다. 주인의 취향 칸은 test_prompt_build 가 _prompt_taste_budget 으로 따로 본다(0021)
+    # 길이는 표본 취향으로 잰다. 주인의 취향 칸(§0~§6 전문)은 재지 않는다. test_prompt_build 는 프롬프트용 한 줄 요약만 _prompt_taste_budget 으로 잰다(0021)
     sys.path.insert(0, str(SKILL / "scripts"))
     import check_all as C
     bg = C.load_bg()
@@ -1595,6 +1595,13 @@ def _build(guide, clean=False, taste_md=None, orig=None, flags=None):
     return P, P.build_prompt(C.load_bg(), guide, orig, flags, "SCRATCH/rec.md", taste_md=taste_md)
 
 
+def _prompt_len(text, orig):
+    """상한과 견주는 한 장 프롬프트의 글자 수. 파일 경로(원문·결과·작업 기록)는 PC 마다 길이가 달라 빼고 센다(0024)."""
+    for p in (orig.as_posix(), orig.with_name(orig.stem + ".taste" + orig.suffix).as_posix(), "SCRATCH/rec.md"):
+        text = text.replace(p, "")
+    return len(text)
+
+
 def test_prompt_build():
     """P5(2026-09-23) · check_all --prompt 의 한 장 프롬프트. 스펙 §4·§10."""
     sys.path.insert(0, str(SKILL / "scripts"))
@@ -1604,10 +1611,18 @@ def test_prompt_build():
     budget = bg["_prompt_budget"]
     # 1 · 예산 — 기권 줄을 실은 경우와 걸린 곳 블록이 가득 찬 경우 둘 다 잰다(2026-10-02). 취향은 표본 문서로 잰다(0021)
     many = [f"{i}행 · AT-18 줄표 남용 「" + "가" * 24 + "…」" for i in range(1, 40)]
+    # 파일 경로는 PC·워크트리마다 길이가 달라 재지 않는다(0024). 같은 원문을 경로가 긴 곳에 두어도 같은 값이어야 한다
+    with tempfile.TemporaryDirectory() as d:
+        deep = Path(d) / ("경로가긴폴더" * 8) / "ai-draft-prose.md"
+        deep.parent.mkdir()
+        deep.write_bytes((ROOT / FIX / "ai-draft-prose.md").read_bytes())
+        a, b = (_build("개조식", taste_md=TASTE_SAMPLE, orig=o)[1] for o in (ROOT / FIX / "ai-draft-prose.md", deep))
+        assert len(a) != len(b) and _prompt_len(a, ROOT / FIX / "ai-draft-prose.md") == _prompt_len(b, deep), (len(a), len(b))
+    prose, form = ROOT / FIX / "ai-draft-prose.md", ROOT / FIX / "form-plan.md"
     for g in C.guide_names(bg):
-        for kw in (dict(clean=True), dict(flags=many), dict(flags=many, orig=ROOT / FIX / "form-plan.md")):
+        for kw in (dict(clean=True, orig=prose), dict(flags=many, orig=prose), dict(flags=many, orig=form)):
             _, text = _build(g, taste_md=TASTE_SAMPLE, **kw)
-            assert len(text) <= budget, (g, list(kw), len(text))
+            assert _prompt_len(text, kw["orig"]) <= budget, (g, list(kw), _prompt_len(text, kw["orig"]))
     P, jang = _build("장피엠")
     # 주인의 취향 줄은 따로 잰다(0021). 넘으면 취향 규칙을 합치거나 줄인다. 공개본·CI 에는 주인 문서가 없다
     own = ROOT / "taste" / "writing-taste.md"
@@ -1720,11 +1735,17 @@ def test_prompt_taste_lines():
         t = Path(d) / "writing-taste.md"
         extra = "W-99 [경향] 시험용 규칙은 한 줄로 실린다 — 적용: 공통 (시험) — 근거: T-9999 (n=1) — 예: 전 → 후 — 검출: human — 갱신 2026-09-23\n"
         t.write_bytes(real.replace("## 7.", extra + "\n## 7.", 1).encode("utf-8"))
-        _, text = _build("장피엠", taste_md=t)
+        P, text = _build("장피엠", taste_md=t)
         assert "- W-99 [경향] 시험용 규칙은 한 줄로 실린다 (적용: 공통)" in text, text[:800]
         for m in re.finditer(r"^(W-\d+) \[", real.split("## 7.")[0], re.M):
             assert f"- {m.group(1)} [" in text, m.group(1)
         assert "근거: T-" not in text, "근거·예·검출 꼬리는 싣지 않는다"
+        # taste-builder 는 다른 스킬의 코드를 부르지 않아 취향 줄 길이를 따로 센다. 두 계산과 두 상한이 같아야 한다(2026-10-27)
+        sys.path.insert(0, str(ROOT / ".claude/skills/taste-builder/scripts"))
+        import check_all as C
+        import validate_taste as V
+        assert V.prompt_taste_len(t.read_text(encoding="utf-8")) == len("\n".join(P.taste_rules(t)))
+        assert V.PROMPT_TASTE_BUDGET == C.load_bg()["_prompt_taste_budget"]
         _, none = _build("장피엠", taste_md=Path(d) / "없는파일.md")
         assert "## 이 사람의 취향" not in none and "W-0" not in none
     print("PASS test_prompt_taste_lines")

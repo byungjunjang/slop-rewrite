@@ -70,7 +70,7 @@ URL을 알리고 먼저 **무엇을 적을지**를 말한다. AI가 쓴 문장�
 질문·보류 케이스는 `--status 보류 --note "…"`.
 
 ## Step 6. 검증
-`python -X utf8 $S/validate_taste.py --doc taste/writing-taste.md` → `OK`가 나올 때까지 문서를 고친다. 원장은 고치지 않는다(`--map`만 허용).
+`python -X utf8 $S/validate_taste.py --doc taste/writing-taste.md` → `OK`가 나올 때까지 문서를 고친다. 원장은 고치지 않는다(`--map`만 허용). `경고:` 줄은 윤문 프롬프트에 실리는 취향 줄이 1,500자를 넘었다는 뜻이다. 이때는 규칙을 혼자 줄이지 않고, 브리핑에서 합치거나 줄일 규칙을 사용자에게 묻는다.
 
 ## Step 7. changelog
 `taste/changelog.md` 표에 한 줄: 날짜 · raw 파일명 · +신규/중복 · 규칙 변동(신설 W-.., 승격 W-.., 강등 W-.., 보류 W-..) · 버전.

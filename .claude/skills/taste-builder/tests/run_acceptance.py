@@ -95,6 +95,26 @@ def test_validate_pass_and_fail():
     print("PASS test_validate_pass_and_fail")
 
 
+def test_validate_taste_budget():
+    """윤문 프롬프트의 취향 줄이 상한 1,500자를 넘으면 기록할 때 경고 한 줄이 나온다. 규칙은 사용자와 함께 줄이므로
+    종료 코드는 0 이다(0021). 표본의 취향 줄은 96자이고, W-01 진술 24자를 L자로 바꾸면 72+L자가 된다."""
+    ledger = TMP / "cases.jsonl"  # test_map 이후 상태
+    sample = (FIX / "writing-taste.sample.md").read_text(encoding="utf-8")
+    stmt = '"A가 아니라 B" 대구는 문단당 하나까지만'
+    for n, warned in ((1500, False), (1501, True)):
+        doc = TMP / f"taste-{n}.md"
+        doc.write_text(sample.replace(stmt, "가" * (n - 72)), encoding="utf-8", newline="\n")
+        code, out, err = run(SCRIPTS / "validate_taste.py", "--doc", doc, "--ledger", ledger)
+        assert code == 0, err
+        lines = out.splitlines()
+        assert lines[0] == "OK rules=2 cases=5", out
+        if warned:
+            assert len(lines) == 2 and lines[1].startswith("경고:") and "1,501자" in lines[1] and "1,500자" in lines[1], out
+        else:
+            assert len(lines) == 1, out
+    print("PASS test_validate_taste_budget")
+
+
 def test_to_artifact():
     src = TMP / "report.min.html"
     src.write_text(
@@ -230,6 +250,7 @@ if __name__ == "__main__":
     test_map()
     test_ingest_chat_origin()
     test_validate_pass_and_fail()
+    test_validate_taste_budget()
     test_to_artifact()
     test_local_review()
     test_default_ledger()
