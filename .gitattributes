@@ -29,6 +29,7 @@ taste/README.md -export-ignore
 styleguides/toss/corpus/posts export-ignore
 styleguides/toss/corpus/posts.json export-ignore
 
+
 # 설명 페이지(Vercel 배포본)는 원본 저장소에만 둔다. 사용자 결정(2026-10-26).
 site export-ignore
 

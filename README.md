@@ -164,3 +164,9 @@ python -X utf8 .claude/skills/slop-rewrite/tests/run_ci.py
 맨 앞에서 환경 검사부터 봅니다. 서드파티 import 가 `requirements` 에 선언돼 있는지 소스만 읽어 확인하고, 제어문자가 섞인 원문을 `lxml` 과 `html.parser` 양쪽으로 뽑아 결과가 같은지 봅니다. 개발기에 패키지가 깔려 있어서 통과하는 일을 막으려는 것입니다.
 
 **OS 마다 한 번씩 돌려 보십시오.** `lxml` 이 묶는 libxml2 는 플랫폼마다 판이 달라서, 같은 원문이 Windows 와 Linux 에서 다른 문장 수로 갈린 적이 있습니다(2026-09-21).
+
+## 라이선스
+
+코드와 문서는 MIT 라이선스로 공개합니다. 전문은 [LICENSE](LICENSE)에 있습니다.
+
+`styleguides/*/corpus/` 에 모은 원문과 가이드에 옮긴 예문은 MIT 라이선스에 들어가지 않습니다. 권리는 각 원저작자에게 있고, 출처는 키트마다 `corpus/` 의 `sources.json`·`urls.txt` 에 적었습니다.

@@ -1297,11 +1297,15 @@ def test_registered_guide():
         assert r.returncode == 0 and "[done]" in r.stdout, r.stdout + r.stderr
         assert "[skip]" in run(reg, "--kit", "styleguides/jangpm", "--name", "테스트가이드", "--base", str(tmp)).stdout
         new = json.loads(tmp.read_text(encoding="utf-8"))
-        assert list(new)[:5] == ["장피엠", "개조식", "업무", "토스", "테스트가이드"] and new["_checker_kind"]["테스트가이드"] == "style"
+        # 사용자가 등록한 가이드가 이미 있어도 새 가이드는 기존 가이드들 뒤에 붙는다
+        guides = [k for k in bg if not k.startswith("_")]
+        assert guides[:4] == ["장피엠", "개조식", "업무", "토스"], guides
+        assert [k for k in new if not k.startswith("_")] == guides + ["테스트가이드"] and new["_checker_kind"]["테스트가이드"] == "style"
         code = ("import sys; from pathlib import Path; sys.path.insert(0, %r); import check_all; "
                 "check_all.BASE = Path(%r); sys.exit(check_all.main(sys.argv[1:]))" % (scripts, str(tmp)))
         h = run("-c", code, "--guide", "없음", "--hint", prose)
-        assert "줄글: 장피엠(기본), 업무(기본), 토스(기본), 테스트가이드" in h.stdout.splitlines()[2], h.stdout + h.stderr
+        layer = h.stdout.splitlines()[2]
+        assert "줄글: 장피엠(기본), 업무(기본), 토스(기본), " in layer and ", 테스트가이드 · 개조식:" in layer, h.stdout + h.stderr
         # 줄글 가이드가 여럿이라 묻고, 이름을 주면 사전 검사가 그 가이드로 돈다
         assert h.returncode == 0 and h.stdout.splitlines()[3] == "가이드: 묻는다 · 가이드 둘 이상", h.stdout + h.stderr
         h = run("-c", code, "--guide", "테스트가이드", "--hint", prose)
