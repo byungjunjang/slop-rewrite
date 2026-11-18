@@ -86,6 +86,25 @@ git clone https://github.com/byungjunjang/slop-rewrite.git
 cd slop-rewrite
 ```
 
+### Claude Code 플러그인으로 설치하기 (어느 폴더에서나)
+
+클론 없이 어느 폴더에서나 세 스킬을 쓰려면 Claude Code 에서 플러그인으로 설치합니다. Claude Code 2.1.275 이상은 한 줄입니다.
+
+```
+/plugin install slop-rewrite --marketplace byungjunjang/slop-rewrite
+```
+
+그 전 버전은 두 줄로 합니다.
+
+```
+/plugin marketplace add byungjunjang/slop-rewrite
+/plugin install slop-rewrite@slop-rewrite
+```
+
+설치하면 `/slop-rewrite:slop-rewrite`, `/slop-rewrite:styleguide-builder`, `/slop-rewrite:taste-builder` 로 부르거나, 자연어로 「이 글 윤문해줘」라고 합니다. 블로그 수집(styleguide-builder)에 쓰는 `beautifulsoup4`·`lxml` 은 한 번 `pip install beautifulsoup4 lxml` 로 설치합니다.
+
+문체 가이드와 취향을 **계속 쌓아** 매 윤문에 반영하려면 아래 클론 방식을 권합니다. 플러그인 설치 폴더는 업데이트할 때 초기화되어, 새로 만든 가이드·취향이 남지 않습니다. 윤문·검토와 기본 가이드(장피엠·업무·토스·개조식)는 플러그인만으로 그대로 됩니다.
+
 1. **바로 써 보기.** Claude Code 또는 Codex에서 이 폴더를 열고 파일을 지정해 「이 글 윤문해줘」라고 합니다. 줄글은 가이드 후보 가운데 고르거나, 가이드 없이 취향만 적용할 수 있습니다. 보고서는 개조식 가이드를 씁니다. 취향 문서가 없어도 실행됩니다. 원본 옆에 생긴 윤문 파일과 작업 기록을 확인합니다.
 2. **내 문체 가이드 만들기.** 내가 쓴 글 다섯 편 이상을 모아 「내 블로그 문체 가이드 만들어줘」라고 요청합니다. 블로그 주소나 로컬 `.md` 폴더를 줄 수 있습니다. styleguide-builder가 가이드를 만들고 검증한 뒤 등록하면, 다음 윤문에서 선택할 수 있습니다. 현재 자동 생성은 블로그형 줄글을 지원합니다. 토스피드 여러 필진의 글로 만든 토스 가이드도 기본 선택지에 있습니다. 생성과 갱신 절차는 [문체 가이드 안내](styleguides/README.md)에 있습니다.
 3. **내 취향 쌓기.** AI 결과물 하나를 「코멘트 달 수 있게 올려줘」로 올립니다. 읽다가 걸리는 문장마다 「내가 쓴다면 이렇게 쓴다」를 코멘트로 답니다. 「코멘트 반영해줘」라고 요청하면 `taste/writing-taste.md`에 규칙이 생기고 다음 윤문에 들어갑니다. 모델을 다시 학습시키는 방식이 아니라 취향 문서를 프롬프트에 반영하는 방식입니다.
