@@ -1,0 +1,21 @@
+{
+  "name": "slop-rewrite",
+  "version": "0.1.0",
+  "description": "AI가 쓴 한국어 초안을 원칙·문체 가이드·취향 세 층위로 다시 쓰는 윤문 스킬 모음 (slop-rewrite · styleguide-builder · taste-builder)",
+  "author": {
+    "name": "byungjunjang",
+    "url": "https://github.com/byungjunjang"
+  },
+  "homepage": "https://slop-rewrite.vercel.app/",
+  "repository": "https://github.com/byungjunjang/slop-rewrite",
+  "license": "MIT",
+  "keywords": [
+    "korean",
+    "writing",
+    "rewrite",
+    "editing",
+    "proofreading",
+    "ai-detector",
+    "styleguide"
+  ]
+}
